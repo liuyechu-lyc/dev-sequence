@@ -1,0 +1,18 @@
+{
+  "mode": "automatic",
+  "stages": ["prd", "ui", "proto", "tech", "code", "test"],
+  "scope": "填写用户明确授权的本期目标、范围、完成条件与排除项",
+  "authorization": {
+    "by": "填写实际授权人",
+    "source": "填写原始用户消息或可核验来源",
+    "text": "引用实际用户授权原文，不复制示例冒充真实授权"
+  },
+  "allowed": {
+    "review": true,
+    "notifyOrigin": true,
+    "repair": true,
+    "advance": true,
+    "autoConfirm": true
+  },
+  "limits": {"maxRepairRounds": 3, "maxNoProgress": 2}
+}

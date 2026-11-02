@@ -1,0 +1,6 @@
+interface:
+  display_name: "研序 · 技术方案设计"
+  short_description: "独立完成技术方案设计，支持外部输入、版本追溯、隔离评审与阶段确认"
+  default_prompt: "使用 $dev-sequence-tech 完成当前项目的技术方案设计并交付可审阅成果。"
+policy:
+  allow_implicit_invocation: true

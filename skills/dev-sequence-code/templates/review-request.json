@@ -1,0 +1,73 @@
+{
+  "artifacts": [
+    {
+      "path": "代码/当前产物文件",
+      "version": "填写真实业务修订"
+    }
+  ],
+  "context": [
+    {
+      "role": "prd",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    },
+    {
+      "role": "prototype",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    },
+    {
+      "role": "tech",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    },
+    {
+      "role": "tasks",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    }
+  ],
+  "scope": {
+    "description": "填写本轮实际范围",
+    "exclusions": []
+  },
+  "checklist": [
+    {
+      "id": "CODE-01",
+      "text": "代码/构建基线、任务和 FR/规则/AC 关联可定位，任务勾选均有实现/验证证据。",
+      "kind": "semantic"
+    },
+    {
+      "id": "CODE-02",
+      "text": "业务、权限、数据状态和异常恢复符合需求；架构偏离有决策且已回写。",
+      "kind": "semantic"
+    },
+    {
+      "id": "CODE-03",
+      "text": "适用输入校验、幂等、并发、重试/取消/补偿及真实数据一致性已检查。",
+      "kind": "semantic"
+    },
+    {
+      "id": "CODE-04",
+      "text": "已约定构建、静态和相关测试实际运行，行为与关键不变量有证据，模拟与真实集成分开。",
+      "kind": "semantic"
+    },
+    {
+      "id": "CODE-05",
+      "text": "按风险检查越权、注入、敏感信息、凭据、依赖和运行配置；必要部署/回退说明可用。",
+      "kind": "semantic"
+    },
+    {
+      "id": "CODE-06",
+      "text": "规格收敛检查区分遗漏、部分实现、矛盾和超范围新增，有来源的修复任务不重复不重编号。",
+      "kind": "semantic"
+    },
+    {
+      "id": "CODE-07",
+      "text": "独立评审、复验和实施确认绑定当前快照，无未解决阻塞问题，已知限制明确。",
+      "kind": "semantic"
+    }
+  ],
+  "instructions": "填写实际预览/运行/复现方法；无执行能力的项标未检查。",
+  "aiEnabled": false
+}

@@ -1,0 +1,85 @@
+{
+  "enabled": true,
+  "page": {
+    "title": "页面技术规范",
+    "sections": [
+      {
+        "key": "overview",
+        "title": "概述",
+        "content": "查询并维护示例数据。",
+        "changeType": "existing"
+      },
+      {
+        "key": "entry-and-recovery",
+        "title": "角色、入口与离开",
+        "content": "填写实际使用角色、数据权限、进入条件、离开/未保存处理；引用PRD对应FR/BR条目。",
+        "changeType": "existing"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "key": "batch-actions",
+      "title": "批量操作模块",
+      "layer": "base",
+      "changeType": "modified",
+      "changeImpact": "interaction",
+      "sections": [
+        {
+          "key": "changes",
+          "title": "修改点",
+          "items": [
+            {
+              "text": "增加批量操作。",
+              "changeType": "modified"
+            }
+          ]
+        },
+        {
+          "key": "controls",
+          "title": "内容与控件说明",
+          "type": "controls",
+          "changeType": "modified",
+          "items": [
+            {
+              "name": "已选数量",
+              "controlType": "文本",
+              "dataSource": "根据当前列表已勾选的数据条数实时计算",
+              "constraints": "未勾选数据时显示“已选择 0 项”",
+              "changeType": "new"
+            },
+            {
+              "name": "批量启用",
+              "controlType": "按钮",
+              "dataSource": "固定文案“批量启用”",
+              "buttonRole": "action",
+              "constraints": "未勾选数据时禁用",
+              "actionResult": "打开批量启用确认弹窗；确认后将已勾选数据更新为启用状态，关闭弹窗并刷新列表和已选数量",
+              "changeType": "new"
+            },
+            {
+              "name": "批量停用",
+              "controlType": "按钮",
+              "dataSource": "固定文案“批量停用”",
+              "buttonRole": "action",
+              "constraints": "未勾选数据时禁用",
+              "actionResult": "打开批量停用确认弹窗；确认后将已勾选数据更新为停用状态，关闭弹窗并刷新列表和已选数量",
+              "changeType": "new"
+            }
+          ]
+        },
+        {
+          "key": "component-guide-reference",
+          "title": "控件详细规则",
+          "content": "本模块维护批量操作入口与页面反馈；复杂控件字段和状态由引用页面统一维护。",
+          "references": [
+            {
+              "pageId": "example-component-guide"
+            }
+          ],
+          "changeType": "modified"
+        }
+      ]
+    }
+  ]
+}

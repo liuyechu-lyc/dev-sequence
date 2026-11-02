@@ -1,0 +1,58 @@
+{
+  "artifacts": [
+    {
+      "path": "原型/当前产物文件",
+      "version": "填写真实业务修订"
+    }
+  ],
+  "context": [
+    {
+      "role": "prd",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    },
+    {
+      "role": "ui",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    }
+  ],
+  "scope": {
+    "description": "填写本轮实际范围",
+    "exclusions": []
+  },
+  "checklist": [
+    {
+      "id": "PROTO-01",
+      "text": "本期 FR/规则/AC 对应页面模块和可触发场景；无界面需求有不适用理由及其他验证引用。",
+      "kind": "semantic"
+    },
+    {
+      "id": "PROTO-02",
+      "text": "页面、弹窗、字段、默认值、状态与权限表现和需求一致，交互可实际走通。",
+      "kind": "semantic"
+    },
+    {
+      "id": "PROTO-03",
+      "text": "校验、提交中、真实成功、失败/超时及适用恢复可区分，模拟边界与重置可复现。",
+      "kind": "semantic"
+    },
+    {
+      "id": "PROTO-04",
+      "text": "注册表/独立规范/稳定锚点及统一框架/业务版本正确，源与产物校验通过。",
+      "kind": "semantic"
+    },
+    {
+      "id": "PROTO-05",
+      "text": "浏览器实际检查长短页、终端切换、真实高度、标注、拖拽/滚动和浮层生命周期，证据可查。",
+      "kind": "semantic"
+    },
+    {
+      "id": "PROTO-06",
+      "text": "UI 规范、页面/模块说明、业务端统计、术语、FAQ、作者确认的变更记录和埋点说明完整一致。",
+      "kind": "semantic"
+    }
+  ],
+  "instructions": "填写实际预览/运行/复现方法；无执行能力的项标未检查。",
+  "aiEnabled": false
+}

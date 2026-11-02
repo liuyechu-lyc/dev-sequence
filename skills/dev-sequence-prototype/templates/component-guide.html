@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>[控件名称]说明</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #f3f5f8; color: #243043; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .component-guide { width: 100%; padding: 32px; }
+    .guide-section { margin-top: 16px; padding: 24px; border: 1px solid #e2e7ee; background: #fff; }
+    .guide-section h1, .guide-section h2 { margin: 0 0 12px; }
+    .guide-section p { margin: 0; color: #667385; line-height: 1.75; }
+    .structure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+    .structure-slot, .enumeration-slot { min-height: 160px; padding: 18px; border: 1px dashed #b9c5d4; background: #fafbfd; }
+    .rules-scroll { overflow-x: auto; overscroll-behavior: none; }
+    table { width: 100%; min-width: 960px; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px; border: 1px solid #e7ebf1; vertical-align: top; }
+    th { background: #f7f9fb; color: #617083; }
+  </style>
+</head>
+<body>
+  <!--
+    中性骨架：按具体需求重命名、增删区块并实现真实控件。
+    不要因为模板存在而强制使用列表、弹窗或二维矩阵。
+    动态内容使用 {字段名}；控件说明页不放 data-ds-spec-anchor。
+  -->
+  <main class="component-guide" data-ds-prototype-root>
+    <header class="guide-section">
+      <h1>[控件名称]说明</h1>
+      <p>[用途、覆盖范围、关联业务页面、目标业务终端和不包含的内容]</p>
+    </header>
+
+    <section class="guide-section">
+      <h2>阅读方式</h2>
+      <p>[占位符、枚举维度、状态标识和阅读顺序]</p>
+    </section>
+
+    <section class="guide-section">
+      <h2>控件结构</h2>
+      <div class="structure-grid">
+        <article class="structure-slot">[按需求放置一种控件结构，例如 {字段名}]</article>
+        <article class="structure-slot">[可选：第二种关联结构；不需要时删除]</article>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>字段描述规则</h2>
+      <div class="rules-scroll" data-ds-scroll-consumer="x">
+        <table>
+          <thead><tr><th>字段</th><th>数据来源</th><th>生成/展示规则</th><th>状态/交互</th></tr></thead>
+          <tbody><tr><td>{字段名}</td><td>[来源]</td><td>[规则]</td><td>[状态或交互]</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>控件枚举</h2>
+      <div class="enumeration-slot">[按实际需要使用一维、二维或分组枚举]</div>
+    </section>
+
+    <section class="guide-section">
+      <h2>例外规则</h2>
+      <p>[不支持组合、兼容逻辑、历史表现、本期无需实现内容；不需要时删除]</p>
+    </section>
+  </main>
+</body>
+</html>

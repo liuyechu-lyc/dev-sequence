@@ -1,0 +1,19 @@
+/* 起点模板；按已确认风格替换，不把模板默认值当成用户已接受。 */
+:root {
+  --brand-primary: #2563eb;
+  --color-text: #172536;
+  --color-muted: #52657b;
+  --color-surface: #ffffff;
+  --color-background: #f4f6fa;
+  --color-border: #d9e1ec;
+  --color-success: #15803d;
+  --color-warning: #a16207;
+  --color-error: #b91c1c;
+  --font-body: system-ui, sans-serif;
+  --font-size-body: 16px;
+  --line-height-body: 1.6;
+  --space-unit: 4px;
+  --radius-control: 6px;
+  --radius-panel: 12px;
+  --focus-ring: 0 0 0 3px #93c5fd;
+}

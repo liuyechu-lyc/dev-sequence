@@ -1,0 +1,6 @@
+interface:
+  display_name: "研序 · 测试验收"
+  short_description: "新会话独立设计并执行最终测试，自动回传原会话修复，新会话复验"
+  default_prompt: "使用 $dev-sequence-test 在新会话中独立设计并执行最终测试验收，自动回传结果并保留修复与新会话复验闭环。"
+policy:
+  allow_implicit_invocation: true

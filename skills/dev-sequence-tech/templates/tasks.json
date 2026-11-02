@@ -1,0 +1,17 @@
+{
+  "version": "填写真实方案对应修订",
+  "tasks": [
+    {
+      "id": "T001",
+      "description": "替换为具体且可独立验证的工作",
+      "sourceRefs": ["填写真实FR/AC/设计条目"],
+      "outputs": ["填写实际产物/文件"],
+      "dependsOn": [],
+      "doneWhen": "填写业务或工程完成条件",
+      "validation": "填写具体验证方式与预期结果",
+      "state": "todo",
+      "evidence": [],
+      "history": []
+    }
+  ]
+}

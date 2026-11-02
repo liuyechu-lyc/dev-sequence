@@ -1,0 +1,53 @@
+{
+  "artifacts": [
+    {
+      "path": "UI设计/当前产物文件",
+      "version": "填写真实业务修订"
+    }
+  ],
+  "context": [
+    {
+      "role": "brief",
+      "path": "填写项目内真实路径",
+      "version": "填写真实修订"
+    }
+  ],
+  "scope": {
+    "description": "填写本轮实际范围",
+    "exclusions": []
+  },
+  "checklist": [
+    {
+      "id": "UI-01",
+      "text": "参考实际可查，来源、终端、观察时间、采纳范围及推断项明确。",
+      "kind": "semantic"
+    },
+    {
+      "id": "UI-02",
+      "text": "风格方向已形成可查看代表性页面，有真实方向确认依据。",
+      "kind": "semantic"
+    },
+    {
+      "id": "UI-03",
+      "text": "颜色、字体、间距、密度、布局、断点和组件规则可复用，与品牌/组件库关系明确。",
+      "kind": "semantic"
+    },
+    {
+      "id": "UI-04",
+      "text": "适用组件覆盖关键视觉状态，真实终端上布局和可读性有效。",
+      "kind": "semantic"
+    },
+    {
+      "id": "UI-05",
+      "text": "按项目要求检查对比度、焦点、键盘和无障碍，不能只凭视觉印象。",
+      "kind": "semantic"
+    },
+    {
+      "id": "UI-06",
+      "text": "独立验收与规范版本确认分开记录，绑定可查看成果；未确认不自动成为风格基线。",
+      "kind": "semantic"
+    }
+  ],
+  "instructions": "填写实际预览/运行/复现方法；无执行能力的项标未检查。",
+  "aiEnabled": false
+}

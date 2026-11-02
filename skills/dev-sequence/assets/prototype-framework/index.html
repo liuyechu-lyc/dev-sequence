@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="icon" href="data:,">
+<title>{{PROJECT_NAME}} · 原型演示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100vw; height: 100vh; overflow: hidden;
+    overscroll-behavior-x: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px; color: #333;
+  }
+  button { font: inherit; }
+  .layout { display: flex; width: 100vw; height: 100vh; overflow: hidden; }
+
+  /* 左侧导航的 DOM 与样式固定，内容仅来自 nav-config JSON。 */
+  .nav-panel {
+    width: 260px; flex-shrink: 0; display: flex; flex-direction: column;
+    overflow: hidden; background: #fff; border-right: 1px solid #e8e8e8;
+    transition: width .3s ease;
+  }
+  .nav-panel.collapsed { width: 60px; }
+  .nav-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; overflow: hidden; white-space: nowrap; }
+  .nav-header h1 { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+  .nav-header p { margin-top: 4px; font-size: 12px; color: #999; }
+  .nav-panel.collapsed .nav-header { padding: 16px 10px; }
+  .nav-panel.collapsed .nav-header h1,
+  .nav-panel.collapsed .nav-header p,
+  .nav-panel.collapsed .nav-group { opacity: 0; }
+  .nav-body { flex: 1; overflow: auto; padding: 12px 0; }
+  .nav-group { padding: 12px 20px 6px; font-size: 11px; color: #999; font-weight: 500; white-space: nowrap; }
+  .nav-item {
+    display: flex; align-items: center; padding: 9px 20px;
+    color: #555; text-decoration: none; cursor: pointer;
+    border-left: 3px solid transparent; transition: all .15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .nav-item:hover { color: #1890ff; background: #f5f5f5; }
+  .nav-item.active { color: #1890ff; background: #e6f7ff; border-left-color: #1890ff; font-weight: 500; }
+  .nav-item .dot { width: 6px; height: 6px; margin-right: 10px; flex-shrink: 0; border-radius: 50%; background: #d9d9d9; }
+  .nav-item.active .dot { background: #1890ff; }
+  .nav-panel.collapsed .nav-item { padding: 9px 16px; justify-content: center; }
+  .nav-panel.collapsed .nav-item .dot { margin-right: 0; }
+  .nav-panel.collapsed .nav-text { display: none; }
+
+  .resize-handle {
+    width: 24px; height: 72px; flex-shrink: 0; align-self: center;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: 4px; color: #fff; background: #1890ff;
+    font-size: 18px; cursor: pointer; z-index: 100;
+  }
+  .resize-handle:hover { background: #40a9ff; }
+
+  .main-area { flex: 1; position: relative; overflow: hidden; overflow: clip; overscroll-behavior-x: none; background: #e5e5e5; }
+  .proto-frame {
+    position: absolute; top: 0; left: 0; width: 1440px; height: 16px;
+    max-width: none; max-height: none; border: 0; background: #fff;
+    box-shadow: 0 0 0 2px #bbb, 0 4px 24px rgba(0,0,0,.15); transform-origin: 0 0;
+  }
+  .drag-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; cursor: grab; background: transparent; }
+  .drag-overlay.active { display: block; }
+  .drag-overlay.grabbing { cursor: grabbing; }
+  .loading-indicator {
+    position: absolute; top: 50%; left: 50%; display: none;
+    transform: translate(-50%, -50%); color: #999;
+  }
+  .spinner {
+    display: inline-block; width: 20px; height: 20px; margin-right: 8px;
+    border: 2px solid #e8e8e8; border-top-color: #1890ff; border-radius: 50%;
+    vertical-align: middle; animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .viewport-toolbar {
+    position: absolute; left: 50%; bottom: 16px; z-index: 50;
+    display: grid; grid-template-columns: max-content max-content;
+    align-items: center; width: max-content; max-width: calc(100% - 32px); padding: 6px 0 6px 10px;
+    transform: translateX(-50%); border-radius: 8px; background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,.12);
+  }
+  .toolbar-controls { display: flex; align-items: center; gap: 6px; }
+  .viewport-toolbar button {
+    padding: 4px 10px; border: 1px solid #d9d9d9; border-radius: 4px;
+    color: #555; background: #fff; cursor: pointer;
+  }
+  .viewport-toolbar button:hover:not(:disabled) { color: #1890ff; border-color: #1890ff; }
+  .viewport-toolbar button.active { color: #fff; border-color: #1890ff; background: #1890ff; }
+  .viewport-toolbar button.active:hover:not(:disabled) { color: #fff; border-color: #40a9ff; background: #40a9ff; }
+  .viewport-toolbar button:disabled { cursor: default; opacity: .9; }
+  .viewport-buttons { display: flex; gap: 6px; }
+  .toolbar-divider { width: 1px; height: 18px; background: #e8e8e8; }
+  .zoom-label { min-width: 40px; text-align: center; font-size: 12px; color: #555; }
+  .pan-hint {
+    grid-area: 1 / 1;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    color: #666; font-size: 12px; white-space: nowrap;
+  }
+  .pan-hint-slot {
+    min-width: 0; margin-left: 10px; padding: 0 10px;
+    display: grid; align-items: center; justify-items: center;
+    border-left: 1px solid #e8e8e8;
+  }
+  .pan-hint-measure { visibility: hidden; pointer-events: none; }
+  .pan-hint.active { color: #1677ff; }
+  .space-key {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 54px; height: 24px; padding: 0 9px;
+    border: 1px solid #b8c0cc; border-bottom-width: 3px; border-radius: 5px;
+    color: #4b5563; background: linear-gradient(#fff,#f3f5f7);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08); font-size: 11px; font-weight: 650;
+    letter-spacing: .2px; line-height: 20px;
+  }
+  .pan-hint.active .space-key {
+    color: #fff; border-color: #1677ff; background: linear-gradient(#4096ff,#1677ff);
+  }
+
+  .specs-panel {
+    width: 360px; flex-shrink: 0; display: none; flex-direction: column;
+    overflow: hidden; background: #fff; border-left: 1px solid #e8e8e8;
+    transition: width .3s ease;
+  }
+  .specs-panel.visible { display: flex; }
+  .specs-panel.collapsed { width: 48px; }
+  .specs-header {
+    min-height: 56px; display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 12px 16px; border-bottom: 1px solid #f0f0f0;
+  }
+  .specs-header-text { min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .view-page-specs {
+    display: none; flex-shrink: 0; padding: 4px 8px; border: 1px solid #91caff;
+    border-radius: 4px; color: #1677ff; background: #fff; cursor: pointer; font-size: 12px;
+  }
+  .view-page-specs.visible { display: inline-block; }
+  .specs-body { flex: 1; overflow-y: auto; padding: 16px; }
+  .specs-panel.collapsed .specs-header > *,
+  .specs-panel.collapsed .specs-body { display: none; }
+  .specs-collapsed-text { display: none; padding-top: 16px; color: #999; writing-mode: vertical-rl; }
+  .specs-panel.collapsed .specs-collapsed-text { display: flex; justify-content: center; }
+  .specs-empty { padding-top: 40px; text-align: center; color: #999; }
+  .spec-section { margin-bottom: 16px; }
+  .spec-section-title { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 13px; font-weight: 650; color: #333; }
+  .spec-number { color: #1677ff; font-variant-numeric: tabular-nums; }
+  .change-tag { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+  .change-tag.new, .change-tag.modified { color: #cf1322; background: #fff1f0; }
+  .spec-content, .spec-list { color: #666; font-size: 12px; line-height: 1.65; white-space: pre-wrap; }
+  .spec-list { padding-left: 18px; }
+  .spec-list li { margin: 4px 0; list-style: disc; }
+  .spec-list-number { color: #1677ff; font-weight: 600; }
+  .spec-fields { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; color: #666; }
+  .spec-fields th, .spec-fields td { padding: 6px; border: 1px solid #eee; vertical-align: top; word-break: break-word; }
+  .spec-fields th { color: #555; background: #fafafa; text-align: left; }
+  .spec-controls { display: grid; gap: 8px; }
+  .spec-control-card { padding: 10px; border: 1px solid #eee; border-radius: 6px; background: #fafafa; color: #666; font-size: 11px; line-height: 1.55; }
+  .spec-control-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: #333; }
+  .spec-control-head strong { min-width: 0; flex: 1; font-size: 12px; }
+  .spec-control-type { flex: none; padding: 1px 5px; border-radius: 3px; color: #0958d9; background: #e6f4ff; }
+  .spec-control-meta { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 3px 6px; }
+  .spec-control-meta dt { margin: 0; color: #999; }
+  .spec-control-meta dd { margin: 0; white-space: pre-wrap; word-break: break-word; }
+  .spec-page-references { display: grid; gap: 6px; margin-top: 10px; }
+  .spec-page-reference {
+    width: 100%; padding: 8px 10px; border: 1px solid #91caff; border-radius: 5px;
+    color: #1677ff; background: #f6fbff; cursor: pointer; text-align: left; font-size: 12px;
+  }
+  .spec-page-reference:hover, .spec-page-reference:focus-visible { border-color: #1677ff; background: #e6f4ff; outline: none; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="nav-panel" id="navPanel">
+    <div class="nav-header"><h1>{{PROJECT_NAME}}</h1><p>{{PROJECT_SUBTITLE}}</p></div>
+    <nav class="nav-body" id="navBody" aria-label="原型页面导航"></nav>
+  </aside>
+  <button class="resize-handle" id="navToggle" aria-label="折叠导航">&#8249;</button>
+
+  <main class="main-area" id="mainArea">
+    <iframe class="proto-frame" id="protoFrame" scrolling="no" title="原型页面"></iframe>
+    <div class="drag-overlay" id="dragOverlay"></div>
+    <div class="loading-indicator" id="loadingIndicator"><span class="spinner"></span>加载中...</div>
+    <div class="viewport-toolbar">
+      <div class="toolbar-controls">
+        <div class="viewport-buttons" id="viewportButtons" aria-label="终端切换"></div>
+        <div class="toolbar-divider"></div>
+        <button id="btnZoomOut" aria-label="缩小">−</button>
+        <span class="zoom-label" id="zoomLabel">100%</span>
+        <button id="btnZoomIn" aria-label="放大">+</button>
+      </div>
+      <div class="pan-hint-slot">
+        <span class="pan-hint pan-hint-measure" aria-hidden="true">
+          <span>松开</span><span class="space-key">Space</span><span>操作原型</span>
+        </span>
+        <span class="pan-hint" id="panHint" role="status" aria-live="polite" aria-label="按住空格拖拽页面">
+          <span id="panHintLead">按住</span>
+          <span class="space-key" aria-hidden="true">Space</span>
+          <span id="panHintAction">拖拽页面</span>
+        </span>
+      </div>
+    </div>
+  </main>
+
+  <button class="resize-handle" id="specsToggle" aria-label="折叠技术规范" style="display:none">&#8250;</button>
+  <aside class="specs-panel" id="specsPanel">
+    <div class="specs-header">
+      <span class="specs-header-text" id="specsTitle">技术规范</span>
+      <button class="view-page-specs" id="viewPageSpecs">查看页面技术规范</button>
+    </div>
+    <div class="specs-body" id="specsBody"></div>
+    <div class="specs-collapsed-text">技术规范</div>
+  </aside>
+</div>
+
+<!-- 只修改此 JSON；禁止把导航 DOM、CSS 类名或样式写进数据。 -->
+<script id="nav-config" type="application/json">{{NAV_CONFIG_JSON}}</script>
+
+<script>
+(function() {
+  'use strict';
+  var CHANNEL = 'dev-sequence-prototype';
+  var PROTOCOL_VERSION = 5;
+  var BUILD_ID = '{{BUILD_ID}}';
+  var VIEWPORT_LABELS = { pc: 'PC', tablet: '平板', mobile: '手机' };
+  var navPanel = document.getElementById('navPanel');
+  var navToggle = document.getElementById('navToggle');
+  var navBody = document.getElementById('navBody');
+  var mainArea = document.getElementById('mainArea');
+  var protoFrame = document.getElementById('protoFrame');
+  var loadingIndicator = document.getElementById('loadingIndicator');
+  var viewportButtons = document.getElementById('viewportButtons');
+  var specsPanel = document.getElementById('specsPanel');
+  var specsToggle = document.getElementById('specsToggle');
+  var specsBody = document.getElementById('specsBody');
+  var specsTitle = document.getElementById('specsTitle');
+  var viewPageSpecs = document.getElementById('viewPageSpecs');
+  var zoomLabel = document.getElementById('zoomLabel');
+  var dragOverlay = document.getElementById('dragOverlay');
+  var panHint = document.getElementById('panHint');
+  var panHintLead = document.getElementById('panHintLead');
+  var panHintAction = document.getElementById('panHintAction');
+
+  var navConfig = parseJSONScript('nav-config', { groups: [] });
+  var pageByFile = {};
+  var pageById = {};
+  var currentPage = null;
+  var currentManifest = null;
+  var currentViewport = null;
+  var scale = 1;
+  var offsetX = 0;
+  var offsetY = 0;
+  var panMode = false;
+  var dragging = false;
+  var dragStart = null;
+  var wheelPanFrame = 0;
+  var pendingWheelX = 0;
+  var pendingWheelY = 0;
+
+  function parseJSONScript(id, fallback) {
+    try { return JSON.parse(document.getElementById(id).textContent); }
+    catch (error) { console.error('Invalid ' + id + ' JSON', error); return fallback; }
+  }
+
+  function escapeHTML(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(char) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char];
+    });
+  }
+
+  function renderNavigation() {
+    var html = '';
+    (navConfig.groups || []).forEach(function(group) {
+      html += '<div class="nav-group">' + escapeHTML(group.label) + '</div>';
+      (group.pages || []).forEach(function(page) {
+        pageByFile[page.file] = page;
+        pageById[page.id] = page;
+        html += '<a class="nav-item" data-page-file="' + escapeHTML(page.file) + '" href="#page=' + encodeURIComponent(page.file) + '">';
+        html += '<span class="dot"></span><span class="nav-text">' + escapeHTML(page.label) + '</span></a>';
+      });
+    });
+    navBody.innerHTML = html;
+  }
+
+  function resetPageState() {
+    setPanMode(false);
+    stopDragging();
+    resetCanvasPosition();
+    currentManifest = null;
+    currentViewport = null;
+    viewportButtons.innerHTML = '';
+    protoFrame.style.height = '16px';
+    hideSpecs();
+  }
+
+  function resetCanvasPosition() {
+    if (wheelPanFrame) {
+      cancelAnimationFrame(wheelPanFrame);
+      wheelPanFrame = 0;
+    }
+    pendingWheelX = 0;
+    pendingWheelY = 0;
+    offsetX = 0;
+    offsetY = 0;
+    updateTransform();
+    resetMainScroll();
+  }
+
+  function versionedPageUrl(file) {
+    var url = new URL(file, window.location.href);
+    url.searchParams.set('v', BUILD_ID);
+    return url.href;
+  }
+
+  function loadPage(page) {
+    if (!page) return;
+    currentPage = page;
+    resetPageState();
+    loadingIndicator.style.display = 'block';
+    protoFrame.style.opacity = '.3';
+    protoFrame.src = versionedPageUrl(page.file);
+    protoFrame.onload = function() {
+      loadingIndicator.style.display = 'none';
+      protoFrame.style.opacity = '1';
+      try {
+        var h = Math.max(protoFrame.contentDocument.body.scrollHeight, protoFrame.contentDocument.documentElement.scrollHeight);
+        if (h > 0) protoFrame.style.height = Math.ceil(h) + 'px';
+      } catch (error) {}
+    };
+  }
+
+  function isValidMessage(event, data) {
+    return event.source === protoFrame.contentWindow &&
+      data && data.channel === CHANNEL && data.protocolVersion === PROTOCOL_VERSION &&
+      currentPage && data.pageId === currentPage.id;
+  }
+
+  function setSpecsAvailable(enabled) {
+    specsPanel.classList.toggle('visible', enabled);
+    specsToggle.style.display = enabled ? '' : 'none';
+    if (enabled) {
+      specsPanel.classList.remove('collapsed');
+      specsToggle.innerHTML = '&#8250;';
+    }
+    requestAnimationFrame(resetMainScroll);
+  }
+
+  function resetMainScroll() {
+    if (mainArea.scrollLeft) mainArea.scrollLeft = 0;
+    if (mainArea.scrollTop) mainArea.scrollTop = 0;
+  }
+
+  function hideSpecs() {
+    setSpecsAvailable(false);
+    specsBody.innerHTML = '';
+    viewPageSpecs.classList.remove('visible');
+  }
+
+  function changeTag(changeType) {
+    if (changeType !== 'new' && changeType !== 'modified') return '';
+    return '<span class="change-tag ' + changeType + '">' + (changeType === 'new' ? '本次新增' : '本次修改') + '</span>';
+  }
+
+  function itemText(item) {
+    if (typeof item === 'string') return item;
+    return item.text || item.content || item.name || '';
+  }
+
+  function renderPageReferences(references) {
+    if (!Array.isArray(references) || !references.length) return '';
+    var html = '<div class="spec-page-references">';
+    references.forEach(function(reference) {
+      var page = reference && pageById[reference.pageId];
+      if (!page) return;
+      html += '<button type="button" class="spec-page-reference" data-page-reference="' +
+        escapeHTML(page.id) + '">查看《' + escapeHTML(page.label) + '》</button>';
+    });
+    return html + '</div>';
+  }
+
+  function renderSection(section, number) {
+    var html = '<section class="spec-section">';
+    html += '<div class="spec-section-title"><span class="spec-number">' + escapeHTML(number) + '</span>';
+    html += '<span>' + escapeHTML(section.title || '') + '</span>' + changeTag(section.changeType) + '</div>';
+    if (section.content) html += '<div class="spec-content">' + escapeHTML(section.content) + '</div>';
+    html += renderPageReferences(section.references);
+    if (section.type === 'controls' && Array.isArray(section.items)) {
+      html += '<div class="spec-controls">';
+      section.items.forEach(function(item, index) {
+        var itemNumber = number + '.' + (index + 1);
+        var requiredText = item.required === true ? '是' : item.required === false ? '否' : '';
+        var metadata = [
+          ['数据来源', item.dataSource],
+          ['默认值', item.defaultValue],
+          ['必填/必选', requiredText],
+          ['选项', item.options],
+          ['可选范围', item.selectableRange],
+          ['填写约束', item.constraints],
+          ['按钮角色', item.buttonRole === 'save-submit' ? '保存/提交按钮' : item.buttonRole === 'action' ? '操作按钮' : item.buttonRole],
+          ['校验项目及规则', item.validationRules],
+          ['提交成功结果', item.successResult],
+          ['校验不通过结果', item.failureResult],
+          ['点击结果', item.actionResult],
+          ['备注', item.note]
+        ];
+        html += '<article class="spec-control-card"><div class="spec-control-head">';
+        html += '<span class="spec-list-number">' + escapeHTML(itemNumber) + '</span>';
+        html += '<strong>' + escapeHTML(item.name || '') + '</strong>';
+        html += '<span class="spec-control-type">' + escapeHTML(item.controlType || '') + '</span>';
+        html += changeTag(item.changeType) + '</div><dl class="spec-control-meta">';
+        metadata.forEach(function(entry) {
+          if (entry[1] === undefined || entry[1] === null || entry[1] === '') return;
+          html += '<dt>' + escapeHTML(entry[0]) + '</dt><dd>' + escapeHTML(entry[1]) + '</dd>';
+        });
+        html += '</dl></article>';
+      });
+      html += '</div>';
+    } else if (section.type === 'fields' && Array.isArray(section.items)) {
+      html += '<table class="spec-fields"><thead><tr><th>编号/字段</th><th>数据来源</th><th>枚举值</th><th>备注</th></tr></thead><tbody>';
+      section.items.forEach(function(item, index) {
+        var itemNumber = number + '.' + (index + 1);
+        html += '<tr><td><span class="spec-list-number">' + escapeHTML(itemNumber) + '</span> ' + escapeHTML(item.name) + ' ' + changeTag(item.changeType) + '</td>';
+        html += '<td>' + escapeHTML(item.dataSource || '') + '</td><td>' + escapeHTML(item.enum || '') + '</td><td>' + escapeHTML(item.note || '') + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    } else if (Array.isArray(section.items)) {
+      html += '<ul class="spec-list">';
+      section.items.forEach(function(item, index) {
+        html += '<li><span class="spec-list-number">' + escapeHTML(number + '.' + (index + 1)) + '</span> ';
+        html += escapeHTML(itemText(item)) + ' ' + changeTag(item && item.changeType) + '</li>';
+      });
+      html += '</ul>';
+    }
+    return html + '</section>';
+  }
+
+  function showPageSpecs() {
+    if (!currentManifest || !currentManifest.specs || currentManifest.specs.enabled === false) return hideSpecs();
+    var pageSpecs = currentManifest.specs.page || { title: '页面技术规范', sections: [] };
+    setSpecsAvailable(true);
+    specsTitle.textContent = pageSpecs.title || '页面技术规范';
+    viewPageSpecs.classList.remove('visible');
+    specsBody.innerHTML = (pageSpecs.sections || []).map(function(section, index) {
+      return renderSection(section, 'P.' + (index + 1));
+    }).join('') || '<div class="specs-empty">该页面暂无页面级技术规范</div>';
+  }
+
+  function showModuleSpecs(moduleKey) {
+    if (!currentManifest || !currentManifest.specs) return;
+    var modules = currentManifest.specs.modules || [];
+    var moduleIndex = modules.findIndex(function(item) { return item.key === moduleKey; });
+    if (moduleIndex < 0) return;
+    var moduleSpec = modules[moduleIndex];
+    var moduleNumber = String(moduleIndex + 1);
+    setSpecsAvailable(true);
+    specsTitle.textContent = moduleNumber + ' ' + (moduleSpec.title || '模块技术规范');
+    viewPageSpecs.classList.add('visible');
+    specsBody.innerHTML = (moduleSpec.sections || []).map(function(section, index) {
+      return renderSection(section, moduleNumber + '.' + (index + 1));
+    }).join('') || '<div class="specs-empty">该模块暂无技术规范</div>';
+  }
+
+  function renderViewportButtons() {
+    var viewports = currentManifest.viewports;
+    var supported = viewports.supported || [];
+    viewportButtons.innerHTML = '';
+    supported.forEach(function(viewport) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.viewport = viewport.type;
+      button.textContent = VIEWPORT_LABELS[viewport.type] || viewport.type;
+      if (supported.length === 1) button.disabled = true;
+      button.addEventListener('click', function() { applyViewport(viewport); });
+      viewportButtons.appendChild(button);
+    });
+    var initial = supported.find(function(item) { return item.type === viewports.default; }) || supported[0];
+    if (initial) applyViewport(initial);
+  }
+
+  function applyViewport(viewport) {
+    currentViewport = viewport;
+    protoFrame.style.width = Math.ceil(Number(viewport.width)) + 'px';
+    protoFrame.style.height = viewport.type === 'mobile'
+      ? Math.ceil(Number(viewport.height)) + 'px'
+      : '16px';
+    viewportButtons.querySelectorAll('button').forEach(function(button) {
+      button.classList.toggle('active', button.dataset.viewport === viewport.type);
+    });
+    protoFrame.contentWindow.postMessage({
+      channel: CHANNEL,
+      protocolVersion: PROTOCOL_VERSION,
+      type: 'set-viewport',
+      pageId: currentPage.id,
+      viewport: viewport
+    }, '*');
+  }
+
+  function updateTransform() {
+    protoFrame.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px) scale(' + scale + ')';
+    zoomLabel.textContent = Math.round(scale * 100) + '%';
+  }
+
+  function wheelUnit(deltaMode) {
+    if (deltaMode === 1) return 16;
+    if (deltaMode === 2) return Math.max(mainArea.clientHeight, 800);
+    return 1;
+  }
+
+  function queueCanvasPan(deltaX, deltaY, deltaMode) {
+    var unit = wheelUnit(Number(deltaMode));
+    var x = Number(deltaX);
+    var y = Number(deltaY);
+    if (Number.isFinite(x)) pendingWheelX += x * unit;
+    if (Number.isFinite(y)) pendingWheelY += y * unit;
+    if (wheelPanFrame) return;
+    wheelPanFrame = requestAnimationFrame(function() {
+      wheelPanFrame = 0;
+      offsetX -= pendingWheelX;
+      offsetY -= pendingWheelY;
+      pendingWheelX = 0;
+      pendingWheelY = 0;
+      updateTransform();
+    });
+  }
+
+  function handleCanvasWheel(event) {
+    if (event.ctrlKey || event.metaKey || (!event.deltaX && !event.deltaY)) return;
+    if (event.target.closest && event.target.closest('.viewport-toolbar')) {
+      if (Math.abs(Number(event.deltaX)) >= 1) event.preventDefault();
+      return;
+    }
+    event.preventDefault();
+    queueCanvasPan(event.deltaX, event.deltaY, event.deltaMode);
+  }
+
+  function setPanMode(enabled) {
+    if (panMode === enabled) {
+      if (!enabled) notifyPanReset();
+      return;
+    }
+    panMode = enabled;
+    if (!enabled && dragging) stopDragging();
+    dragOverlay.classList.toggle('active', enabled);
+    dragOverlay.classList.toggle('grabbing', false);
+    panHint.classList.toggle('active', enabled);
+    panHintLead.textContent = enabled ? '松开' : '按住';
+    panHintAction.textContent = enabled ? '操作原型' : '拖拽页面';
+    panHint.setAttribute('aria-label', enabled ? '松开空格操作原型' : '按住空格拖拽页面');
+    if (!enabled) notifyPanReset();
+  }
+
+  function notifyPanReset() {
+    if (!currentPage || !protoFrame.contentWindow) return;
+    protoFrame.contentWindow.postMessage({
+      channel: CHANNEL,
+      protocolVersion: PROTOCOL_VERSION,
+      type: 'space-pan-reset',
+      pageId: currentPage.id
+    }, '*');
+  }
+
+  function stopDragging() {
+    dragging = false;
+    dragOverlay.classList.remove('grabbing');
+  }
+
+  function isTypingTarget(target) {
+    if (!target || target === document.body || target === document.documentElement) return false;
+    return Boolean(target.closest && target.closest('input,textarea,select,[contenteditable="true"],[role="textbox"],[role="combobox"]'));
+  }
+
+  function isSpaceEvent(event) {
+    return (event.code === 'Space' || event.key === ' ') && !event.ctrlKey && !event.metaKey && !event.altKey;
+  }
+
+  function handleHash() {
+    var params = new URLSearchParams(location.hash.replace(/^#/, ''));
+    var file = params.get('page');
+    var page = pageByFile[file] || pageByFile[Object.keys(pageByFile)[0]];
+    if (!page) return;
+    navBody.querySelectorAll('.nav-item').forEach(function(item) {
+      item.classList.toggle('active', item.dataset.pageFile === page.file);
+    });
+    if (!currentPage || currentPage.file !== page.file) loadPage(page);
+  }
+
+  navToggle.addEventListener('click', function() {
+    navPanel.classList.toggle('collapsed');
+    navToggle.innerHTML = navPanel.classList.contains('collapsed') ? '&#8250;' : '&#8249;';
+  });
+
+  specsToggle.addEventListener('click', function() {
+    specsPanel.classList.toggle('collapsed');
+    specsToggle.innerHTML = specsPanel.classList.contains('collapsed') ? '&#8249;' : '&#8250;';
+  });
+
+  viewPageSpecs.addEventListener('click', showPageSpecs);
+  specsBody.addEventListener('click', function(event) {
+    var trigger = event.target.closest && event.target.closest('[data-page-reference]');
+    if (!trigger) return;
+    var page = pageById[trigger.getAttribute('data-page-reference')];
+    if (!page) return;
+    location.hash = 'page=' + encodeURIComponent(page.file);
+  });
+  mainArea.addEventListener('scroll', resetMainScroll);
+  mainArea.addEventListener('wheel', handleCanvasWheel, { passive: false });
+  document.getElementById('btnZoomIn').addEventListener('click', function() { scale = Math.min(scale + .1, 2); updateTransform(); });
+  document.getElementById('btnZoomOut').addEventListener('click', function() { scale = Math.max(scale - .1, .2); updateTransform(); });
+  dragOverlay.addEventListener('mousedown', function(event) {
+    if (!panMode) return;
+    dragging = true;
+    dragStart = { x: event.clientX, y: event.clientY, offsetX: offsetX, offsetY: offsetY };
+    dragOverlay.classList.add('grabbing');
+  });
+  window.addEventListener('mousemove', function(event) {
+    if (!dragging) return;
+    offsetX = dragStart.offsetX + event.clientX - dragStart.x;
+    offsetY = dragStart.offsetY + event.clientY - dragStart.y;
+    updateTransform();
+  });
+  window.addEventListener('mouseup', stopDragging);
+  window.addEventListener('keydown', function(event) {
+    if (isSpaceEvent(event) && !isTypingTarget(event.target)) {
+      event.preventDefault();
+      if (!event.repeat) setPanMode(true);
+      return;
+    }
+    if (event.key === '+' || event.key === '=') { event.preventDefault(); document.getElementById('btnZoomIn').click(); }
+    if (event.key === '-') { event.preventDefault(); document.getElementById('btnZoomOut').click(); }
+    if (event.key === '0' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); scale = 1; offsetX = 0; offsetY = 0; updateTransform(); }
+    if (event.key === 'Escape') setPanMode(false);
+  });
+  window.addEventListener('keyup', function(event) {
+    if (!isSpaceEvent(event)) return;
+    event.preventDefault();
+    setPanMode(false);
+  });
+  window.addEventListener('blur', function() { setPanMode(false); stopDragging(); });
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) { setPanMode(false); stopDragging(); }
+  });
+
+  window.addEventListener('message', function(event) {
+    var data = event.data;
+    if (!isValidMessage(event, data)) return;
+    if (data.type === 'page-ready') {
+      currentManifest = data.manifest;
+      renderViewportButtons();
+      if (currentManifest.specs && currentManifest.specs.enabled !== false) showPageSpecs();
+      else hideSpecs();
+    } else if (data.type === 'content-size') {
+      var height = Math.ceil(Number(data.height));
+      if (height > 0 && protoFrame.style.height !== height + 'px') protoFrame.style.height = height + 'px';
+    } else if (data.type === 'canvas-pan') {
+      queueCanvasPan(data.deltaX, data.deltaY, data.deltaMode);
+    } else if (data.type === 'spec-module-selected') {
+      showModuleSpecs(data.moduleKey);
+    } else if (data.type === 'space-pan-start') {
+      setPanMode(true);
+    } else if (data.type === 'space-pan-end') {
+      setPanMode(false);
+    }
+  });
+
+  renderNavigation();
+  window.addEventListener('hashchange', handleHash);
+  handleHash();
+  updateTransform();
+  setPanMode(false);
+})();
+</script>
+</body>
+</html>

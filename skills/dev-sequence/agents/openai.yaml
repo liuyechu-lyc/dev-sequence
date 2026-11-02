@@ -1,0 +1,6 @@
+interface:
+  display_name: "研序 · Dev Sequence"
+  short_description: "编排六个研发环节，支持独立运行、组合交付、隔离验收与跨阶段追溯"
+  default_prompt: "使用 $dev-sequence 按当前授权范围完成项目交付，逐阶段验收并记录确认。"
+policy:
+  allow_implicit_invocation: true

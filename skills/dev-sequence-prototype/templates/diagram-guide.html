@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>[图解主题]</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #f3f5f8; color: #243043; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .diagram-guide { width: 100%; padding: 32px; }
+    .guide-section { margin-top: 16px; padding: 24px; border: 1px solid #e2e7ee; border-radius: 12px; background: #fff; }
+    .guide-section:first-child { margin-top: 0; }
+    .guide-section h1, .guide-section h2 { margin: 0 0 12px; }
+    .guide-section p { margin: 0; color: #667385; line-height: 1.75; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px 20px; margin-top: 16px; color: #536174; font-size: 14px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 8px; }
+    .legend-swatch { width: 22px; height: 12px; border: 2px solid #3b6fd8; border-radius: 3px; background: #edf3ff; }
+    .legend-swatch.result { border-color: #24956c; background: #eaf8f2; }
+    .legend-line { width: 26px; border-top: 2px solid #7d8ca1; }
+    .diagram-scroll { margin-top: 18px; overflow: auto; overscroll-behavior: none; border: 1px solid #e6ebf1; border-radius: 10px; background: #fbfcfe; }
+    .diagram-canvas { display: block; min-width: 880px; width: 100%; height: auto; }
+    .node { fill: #edf3ff; stroke: #3b6fd8; stroke-width: 2; }
+    .node.result { fill: #eaf8f2; stroke: #24956c; }
+    .node-title { fill: #243043; font-size: 16px; font-weight: 650; text-anchor: middle; }
+    .node-note { fill: #667385; font-size: 13px; text-anchor: middle; }
+    .connector { fill: none; stroke: #7d8ca1; stroke-width: 2; marker-end: url(#arrow); }
+    .connector-label { fill: #59677a; font-size: 12px; text-anchor: middle; }
+    .explanation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 16px; }
+    .explanation { padding: 16px; border: 1px solid #e5eaf0; border-radius: 9px; background: #fafbfd; }
+    .explanation h3 { margin: 0 0 8px; font-size: 16px; }
+    .explanation p { font-size: 14px; }
+    .exceptions { margin: 12px 0 0; padding-left: 20px; color: #536174; line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <!--
+    中性骨架：按实际图解类型增删区块，不要保留占位文案。
+    主图优先使用内联 SVG；这类页面不放 data-ds-spec-anchor，不声明技术规范。
+  -->
+  <main class="diagram-guide" data-ds-prototype-root>
+    <header class="guide-section">
+      <h1>[图解主题]</h1>
+      <p>[用途、覆盖范围、阅读对象和不在本页说明的内容]</p>
+    </header>
+
+    <section class="guide-section">
+      <h2>阅读方式</h2>
+      <p>[主阅读方向、编号、颜色、节点形状和线型含义]</p>
+      <div class="legend" aria-label="图例">
+        <span class="legend-item"><i class="legend-swatch"></i>[过程节点]</span>
+        <span class="legend-item"><i class="legend-swatch result"></i>[结果节点]</span>
+        <span class="legend-item"><i class="legend-line"></i>[流向或关系]</span>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>[主图标题]</h2>
+      <p>[主图要回答的核心问题]</p>
+      <div class="diagram-scroll" data-ds-scroll-consumer="x">
+        <svg class="diagram-canvas" viewBox="0 0 960 360" role="img" aria-labelledby="diagram-title diagram-desc">
+          <title id="diagram-title">[主图标题]</title>
+          <desc id="diagram-desc">[用文字概括主要节点、方向、分支和结果]</desc>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#7d8ca1"></path>
+            </marker>
+          </defs>
+          <path class="connector" d="M 270 180 H 390"></path>
+          <text class="connector-label" x="330" y="162">[条件/产物]</text>
+          <path class="connector" d="M 570 180 H 690"></path>
+          <text class="connector-label" x="630" y="162">[条件/产物]</text>
+          <g>
+            <rect class="node" x="90" y="125" width="180" height="110" rx="12"></rect>
+            <text class="node-title" x="180" y="172">[起点/主体]</text>
+            <text class="node-note" x="180" y="199">[输入或职责]</text>
+          </g>
+          <g>
+            <rect class="node" x="390" y="125" width="180" height="110" rx="12"></rect>
+            <text class="node-title" x="480" y="172">[核心节点]</text>
+            <text class="node-note" x="480" y="199">[处理或关系]</text>
+          </g>
+          <g>
+            <rect class="node result" x="690" y="125" width="180" height="110" rx="12"></rect>
+            <text class="node-title" x="780" y="172">[结果/去向]</text>
+            <text class="node-note" x="780" y="199">[输出或状态]</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>节点与关系解释</h2>
+      <div class="explanation-grid">
+        <article class="explanation"><h3>[节点或关系]</h3><p>[职责、输入输出、方向和口径]</p></article>
+        <article class="explanation"><h3>[节点或关系]</h3><p>[职责、输入输出、方向和口径]</p></article>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>分支与例外</h2>
+      <ul class="exceptions">
+        <li>[分支条件、中断、回退或并行规则]</li>
+        <li>[不支持组合、边界或待确认事项]</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN" data-ds-review-template="3">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>研序验收记录</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f8;color:#263446;font:14px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}.page{max-width:1180px;margin:auto;padding:30px 24px}h1{font-size:27px;margin:0 0 7px}h2{font-size:21px;margin:0}h3{font-size:16px;margin:0 0 8px}p{margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}.muted{color:#586a80}.tabs{display:flex;gap:8px;overflow:auto;margin:24px 0 16px;padding-bottom:6px}button{font:inherit;cursor:pointer;border:1px solid #cbd6e4;border-radius:6px;background:white;padding:8px 14px;color:#33465e}button.active{background:#234b76;color:white;border-color:#234b76}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #3883c5;outline-offset:3px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.badge{display:inline-block;font-size:12px;padding:2px 9px;border-radius:5px;background:#e8edf4;color:#32475f;margin:0 7px 3px 0}.good{background:#e4f3ea;color:#1f623d}.warn{background:#fff0dc;color:#885514}.bad{background:#fce6e7;color:#9d3038}.section,.round{background:white;border:1px solid #dce3ec;border-radius:8px;padding:20px;margin-bottom:18px}.statusline{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}.issue{margin:15px 0;padding:16px;background:#fafbfd;border:1px solid #e0e6ef;border-left:4px solid #c76829;border-radius:5px}.issue.question{border-left-color:#8254af}.issue.suggestion{border-left-color:#3280a4}.issue.verified{border-left-color:#3b885d}.issue-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.issue-head strong{font-size:15px}.response{border-left:2px solid #c5d6e4;padding:5px 12px;margin:10px 0;background:#f0f5f9}.table{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;margin:12px 0}th,td{border:1px solid #dce3ec;padding:9px 11px;text-align:left;vertical-align:top;white-space:pre-wrap;overflow-wrap:anywhere}th{background:#edf2f8}details{margin:12px 0}summary{cursor:pointer;color:#365f87;font-weight:600;overflow-wrap:anywhere}.meta{font-size:12px;color:#52677e;overflow-wrap:anywhere}a{color:#1a6798;text-underline-offset:3px}ul{padding-left:22px}.empty{color:#596d83;padding:15px 0}.error{background:#fce6e7;color:#8c2730;padding:18px}footer{font-size:12px;color:#61738a;margin-top:28px;border-top:1px solid #d8e1ed;padding-top:16px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f4f8;padding:15px;font-size:12px}[hidden]{display:none!important}@media(max-width:650px){.page{padding:18px 12px}.section,.round{padding:14px}h1{font-size:23px}button{padding:7px 10px}.issue{padding:12px}}@media print{body{background:white}.page{max-width:none;padding:0}.tabs,.toolbar{display:none}.section,.round{break-inside:auto}.issue{break-inside:avoid}details>*{display:block}summary{display:block}.table{overflow:visible}th,td{font-size:10px;padding:5px}}
+.fold{background:white;border:1px solid #dce3ec;border-radius:8px;padding:16px 20px;margin:14px 0}.fold>summary{color:#263446;list-style-position:outside}.fold>summary .title{font-size:18px;margin-right:14px}.issue-fold>summary .title{font-size:14px}.issue-fold{background:#fafbfd}.counts{font-size:12px;font-weight:400;color:#52677e;margin-left:8px}.pending{border-left:3px solid #bd7329;padding:7px 12px;background:#fff6e9}.pending a{margin-right:12px}.response-fold{border-left:2px solid #c5d6e4;padding-left:12px}.fold-body{padding-top:12px}summary .badge{font-weight:400}@media print{details{display:block}.toolbar{display:none}}</style>
+</head>
+<body>
+<main class="page">
+<header><h1 id="page-title">验收记录</h1><p id="page-meta" class="muted"></p></header>
+<nav id="stage-tabs" class="tabs" aria-label="验收阶段"></nav>
+<div class="toolbar"><button id="expand-all" type="button">全部展开</button><button id="collapse-all" type="button">全部收起</button></div>
+<div id="review-content"></div>
+<noscript><p class="error">请启用JavaScript；同目录Markdown包含相同记录。</p></noscript>
+<footer>原始发现和结论冻结保留。答复与修复追加在提出轮次，独立复验关联回原记录；已修复、已答复不等于已验证关闭。当前版本有效性请运行 status。</footer>
+</main>
+<script id="ds-review-data" type="application/json">{}</script>
+<script>
+'use strict';
+const REVIEW_DATA=JSON.parse(document.getElementById('ds-review-data').textContent);
+const STATES={'pending':'待验收','changes-requested':'需修改','awaiting-verification':'待复验','passed':'范围内通过','stale':'输入已变，待复验','waived':'正式豁免','open':'未处理','fixed':'已修复，待复验','answered':'已答复，待核对','verified':'已验证关闭','declined':'不处理（有解释）','accepted':'已确认','not_checked':'未检查','pass':'复验通过','fail':'复验未通过'};
+const CONFIRMATIONS={'pending':'待确认','accepted':'已确认','changes-requested':'要求调整','stale':'确认已失效'};
+const METHODS={'native':'本模型自动验收','third-party':'第三方验收','skip':'暂不验收'};
+const KINDS={'problem':'问题','suggestion':'建议','question':'疑问'};
+const CHANGES={'new':'新发现','updated':'新增问题点','reopened':'重新打开'};
+const CHECKS={'pass':'通过','fail':'未通过','not_checked':'未检查'};
+let activeStage=0;
+const detailMode=REVIEW_DATA.mode==='round';
+function node(tag,text,cls){const e=document.createElement(tag);if(text!==undefined&&text!==null)e.textContent=typeof text==='string'?text:JSON.stringify(text);if(cls)e.className=cls;return e;}
+function label(v){return STATES[v]||String(v||'待验收');}
+function badge(v){return node('span',label(v),'badge '+(['pass','passed','verified','accepted'].includes(v)?'good':['open','fail','changes-requested'].includes(v)?'bad':'warn'));}
+function paragraph(parent,title,value,cls){if(value!==undefined&&value!==null&&value!=='')parent.append(node('p',title+(typeof value==='string'?value:JSON.stringify(value,null,2)),cls));}
+function fold(title,cls,open){const d=node('details',null,'fold '+(cls||'')),s=node('summary');s.append(node('span',title,'title'));d.append(s);d.open=!!open;return d;}
+function evidence(parent,title,value){if(value===undefined||value===null||value==='')return;const d=fold(title,'evidence',false);d.append(node('pre',typeof value==='string'?value:JSON.stringify(value,null,2)));parent.append(d);}
+function localLink(title,value){
+ if(typeof value!=='string'||!value||/^(?:[a-z][a-z0-9+.-]*:|[\\/])/i.test(value)||/[\\\u0000-\u001f]/.test(value))return node('span',title);
+ const a=node('a',title);a.setAttribute('href',value);return a;
+}
+function originLink(stage,item){
+ const relative=stage.folder+'/第'+String(item.originRound).padStart(3,'0')+'轮.html';
+ return localLink(item.issueId+' · 第'+String(item.originRound).padStart(3,'0')+'轮',(detailMode?'../':'')+relative);
+}
+function table(parent,headers,rows){const wrap=node('div',null,'table'),t=node('table'),head=node('thead'),hr=node('tr'),body=node('tbody');headers.forEach(h=>hr.append(node('th',h)));head.append(hr);rows.forEach(row=>{const tr=node('tr');row.forEach(v=>{const td=node('td');td.append(v instanceof Node?v:node('span',v));tr.append(td);});body.append(tr);});t.append(head,body);wrap.append(t);parent.append(wrap);}
+function pending(parent,stage,items,title){
+ if(!items||!items.length)return;
+ const box=node('div',null,'pending');paragraph(box,title+'：','共 '+items.length+' 项；保留编号和原记录入口，不重复问题全文。');
+ items.forEach(i=>{const row=node('div');row.append(originLink(stage,i),badge(i.status));box.append(row);});parent.append(box);
+}
+function issueCard(issue){
+ const d=fold(issue.id+' · '+(KINDS[issue.kind]||'问题')+' · '+CHANGES[issue.changeType],'issue-fold',issue.processingStatus!=='verified');
+ d.querySelector('summary').append(badge(issue.processingStatus),node('span',issue.severity,'badge'));
+ const body=node('div',null,'fold-body');paragraph(body,'',issue.description);paragraph(body,'验收时状态：',label(issue.status),'meta');paragraph(body,'来源：',issue.source,'meta');evidence(body,'查看原始证据',issue.evidence);
+ if(issue.resolution)paragraph(body,'原始建议或本次变化说明：',issue.resolution);
+ const history=(issue.history||[]).filter(h=>h.type!=='review'||h.status!=='open'||h.round!==issue.occurrenceRound);
+ const answers=fold('答复、修复与后续复验（'+history.length+'）','response-fold',issue.processingStatus!=='verified');
+ if(!history.length)paragraph(answers,'','暂无处理答复；不能据此认定已解决。','muted');
+ history.forEach(h=>{const part=node('div',null,'response');paragraph(part,'','第'+String(h.round).padStart(3,'0')+'轮 · '+(h.by||'未署名')+' · '+(h.at||''),'meta');part.append(badge(h.disposition||h.status));paragraph(part,'',h.message||h.description||'');if(h.description&&h.message&&h.type==='review')paragraph(part,'本次发现：',h.description);evidence(part,'处理或复验依据',h.evidence);if(h.roundState==='stale')part.append(badge('stale'));answers.append(part);});
+ body.append(answers);d.append(body);return d;
+}
+function roundCard(stage,round,index){
+ const active=round.issues.some(i=>i.processingStatus!=='verified');
+ const d=fold('第'+String(round.number).padStart(3,'0')+'轮 · '+(round.kind==='fix'?'历史修复记录':'验收记录'),'round-fold',detailMode||index===0||active);
+ const s=round.stats;d.querySelector('summary').append(badge(round.status),node('span','新发现 '+s.new+' · 新问题点 '+s.updated+' · 重开 '+s.reopened+' · 复验关闭 '+s.verified+' · 当时未关闭 '+s.pending,'counts'));
+ const body=node('div',null,'fold-body');
+ paragraph(body,'','创建：'+round.createdAt+' · 结果记录：'+(round.recordedAt||'待回传')+' · '+round.method+' · '+(round.reviewer.name||'尚未评审'),'meta');
+ paragraph(body,'本轮范围：',round.scope.description);paragraph(body,'原始结论：',round.overall);paragraph(body,'',round.summary);
+ if(round.staleReason)paragraph(body,'失效原因：',round.staleReason,'error');
+ (round.validationReasons||[]).forEach(r=>paragraph(body,'',r,'error'));
+ if(round.notChecked.length)paragraph(body,'未检查范围：',round.notChecked,'pending');
+ pending(body,stage,round.pendingIssues,'验收当时未关闭');
+ evidence(body,'输入指纹',round.fingerprint);if(round.reviewChoice)evidence(body,'本轮验收方式选择及依据',round.reviewChoice);
+ body.append(node('h3','本轮新发现与变化'));
+ if(!round.issues.length)paragraph(body,'',round.recordedAt?'本轮没有新增或重新打开的问题；历史项见复验结果和待处理提示。':'尚未收到验收结果，不能推定没有问题。','empty');
+ round.issues.forEach(i=>body.append(issueCard(i)));
+ if(round.followUps.length){body.append(node('h3','历史问题复验'));table(body,['问题与提出轮次','本次结论','实际证据','说明'],round.followUps.map(v=>[originLink(stage,v),badge(v.result),v.evidence,v.comment]));}
+ const checks=fold('逐项检查（'+round.checks.length+'）','checks',round.checks.some(c=>c.result!=='pass'));
+ table(checks,['检查项','结论','实际证据','说明'],round.checks.map(c=>[c.id,CHECKS[c.result]||c.result,c.evidence,c.comment||'']));body.append(checks);
+ evidence(body,'明确排除',round.scope.exclusions);if(round.waiver)evidence(body,'正式豁免',round.waiver);if(round.independentTest)evidence(body,'独立测试设计与执行',round.independentTest);if(round.handoffs.length)evidence(body,'派发与回传明细',round.handoffs);
+ if(!detailMode)body.append(localLink('查看本轮独立记录',round.reportUrl));
+ if(round.auditUrl){const prefix=detailMode?'':stage.folder+'/';const p=node('p');p.append(localLink('查看冻结原始结果',prefix+round.auditUrl));body.append(p);}
+ d.append(body);return d;
+}
+function render(){
+ const tabs=document.getElementById('stage-tabs'),content=document.getElementById('review-content');tabs.replaceChildren();content.replaceChildren();
+ const stages=REVIEW_DATA.stages||[];
+ document.title=REVIEW_DATA.project+' · '+(detailMode?'单轮验收记录':'验收记录总览');document.getElementById('page-title').textContent=document.title;
+ document.getElementById('page-meta').textContent='按阶段和轮次阅读；答复与修复留在问题提出轮次，已关闭问题不再重复列为新发现。轮次按结果记录时间倒序，未回传按创建时间；当前状态仍按最新编号轮次。';
+ if(!stages.length){paragraph(content,'','暂无阶段记录。');return;}
+ if(activeStage>=stages.length)activeStage=0;
+ if(!detailMode)stages.forEach((s,i)=>{const b=node('button',s.name+' · '+label(s.status),i===activeStage?'active':'');b.setAttribute('aria-pressed',String(i===activeStage));b.onclick=()=>{activeStage=i;render();};tabs.append(b);});
+ const stage=stages[activeStage],summary=node('section',null,'section');summary.append(node('h2',stage.name),badge(stage.status));
+ paragraph(summary,'阶段确认：',CONFIRMATIONS[stage.confirmation.status]||'待确认');if(stage.confirmation.by)paragraph(summary,'确认人与依据：',stage.confirmation.by+'；'+(stage.confirmation.evidence||''));
+ const choice=stage.reviewChoice;paragraph(summary,'当前验收方式：',choice?METHODS[choice.method]:'尚未登记；不能推断为本模型');
+ if(choice){evidence(summary,'选择依据与复用范围',choice);if(choice.method==='skip')paragraph(summary,'','当前选择暂不验收；不产生通过或豁免。','pending');}
+ pending(summary,stage,stage.pendingIssues,'当前待处理');content.append(summary);
+ if(!stage.rounds.length)paragraph(content,'','暂无验收轮次。','empty');
+ stage.rounds.forEach((r,i)=>content.append(roundCard(stage,r,i)));
+}
+document.getElementById('expand-all').onclick=()=>document.querySelectorAll('#review-content details').forEach(d=>d.open=true);
+document.getElementById('collapse-all').onclick=()=>document.querySelectorAll('#review-content details').forEach(d=>d.open=false);
+try{render();}catch(error){document.getElementById('review-content').replaceChildren(node('p','记录无法显示：'+error.message,'error'));}
+</script>
+</body>
+</html>

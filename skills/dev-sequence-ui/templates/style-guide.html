@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PROJECT_NAME}} · 风格指南</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+    font-size: var(--font-size-base, 14px);
+    color: var(--color-text, #1f2937);
+    background: var(--color-bg, #f5f5f5);
+    line-height: 1.6;
+    padding: 40px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  .subtitle { color: var(--color-text-secondary, #6b7280); margin-bottom: 40px; }
+
+  .section {
+    background: var(--color-bg-white, #fff);
+    border-radius: var(--border-radius, 8px);
+    padding: 32px; margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .section h2 {
+    font-size: 18px; font-weight: 600; margin-bottom: 20px;
+    padding-bottom: 12px; border-bottom: 2px solid #f0f0f0;
+  }
+
+  /* 色板 */
+  .color-grid { display: flex; flex-wrap: wrap; gap: 16px; }
+  .color-swatch {
+    width: 120px; text-align: center;
+  }
+  .color-swatch .preview {
+    width: 100%; height: 60px; border-radius: 8px; margin-bottom: 6px;
+    border: 1px solid #eee;
+  }
+  .color-swatch .name { font-size: 12px; color: #666; }
+  .color-swatch .value { font-size: 11px; color: #999; font-family: monospace; }
+
+  /* 排版 */
+  .type-demo h1, .type-demo h2, .type-demo h3, .type-demo h4, .type-demo p { margin-bottom: 8px; }
+  .type-demo .label { font-size: 11px; color: #999; margin-right: 12px; }
+
+  /* 组件预览 */
+  .component-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .component-row .label { font-size: 11px; color: #999; width: 80px; flex-shrink: 0; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 8px 20px; border-radius: var(--border-radius, 8px);
+    font-size: var(--font-size-base, 14px); font-weight: 500;
+    border: 1px solid transparent; cursor: pointer; transition: all 0.2s;
+    line-height: 1.4;
+  }
+  .btn-primary { background: var(--color-primary, #1890ff); color: #fff; }
+  .btn-primary:hover { background: var(--color-primary-hover, #40a9ff); }
+  .btn-outline { background: transparent; color: var(--color-primary, #1890ff); border-color: var(--color-primary, #1890ff); }
+  .btn-outline:hover { background: var(--color-primary, #1890ff); color: #fff; }
+  .btn-text { background: transparent; color: var(--color-text, #333); border: none; }
+  .btn-text:hover { background: #f5f5f5; }
+
+  .input-demo {
+    padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: var(--border-radius, 8px);
+    font-size: var(--font-size-base, 14px); outline: none; transition: border-color 0.2s;
+    width: 240px;
+  }
+  .input-demo:focus { border-color: var(--color-primary, #1890ff); }
+
+  .card-demo {
+    background: var(--color-bg-white, #fff); border-radius: var(--border-radius, 8px);
+    padding: 20px; border: 1px solid #eee; width: 240px;
+  }
+
+  /* 布局框架 */
+  .layout-scaffold { position: relative; height: 300px; border: 2px dashed #d9d9d9; border-radius: 8px; overflow: hidden; margin-top: 12px; }
+  .layout-scaffold .sidebar { position: absolute; left: 0; top: 0; bottom: 0; width: var(--sidebar-width, 220px); background: #fafafa; border-right: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; }
+  .layout-scaffold .header { position: absolute; top: 0; left: var(--sidebar-width, 220px); right: 0; height: var(--header-height, 64px); background: #fafafa; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; }
+  .layout-scaffold .content { position: absolute; top: var(--header-height, 64px); left: var(--sidebar-width, 220px); right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #ccc; }
+
+  /* 布局框架（无侧边栏） */
+  .layout-scaffold.no-sidebar .sidebar { display: none; }
+  .layout-scaffold.no-sidebar .header { left: 0; }
+  .layout-scaffold.no-sidebar .content { left: 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>{{PROJECT_NAME}}</h1>
+  <p class="subtitle">风格指南 · 设计 Token 参考</p>
+
+  <!-- 色彩 -->
+  <div class="section">
+    <h2>🎨 色彩系统</h2>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="preview" style="background:var(--color-primary,#1890ff)"></div><div class="name">主色</div><div class="value">--color-primary</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-primary-hover,#40a9ff)"></div><div class="name">主色 Hover</div><div class="value">--color-primary-hover</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-success,#52c41a)"></div><div class="name">成功</div><div class="value">--color-success</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-warning,#faad14)"></div><div class="name">警告</div><div class="value">--color-warning</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-error,#f5222d)"></div><div class="name">错误</div><div class="value">--color-error</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-bg,#f5f5f5)"></div><div class="name">背景</div><div class="value">--color-bg</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-bg-white,#fff);border:1px solid #ddd"></div><div class="name">白色卡片</div><div class="value">--color-bg-white</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-text,#1f2937)"></div><div class="name">文字主色</div><div class="value">--color-text</div></div>
+      <div class="color-swatch"><div class="preview" style="background:var(--color-text-secondary,#6b7280)"></div><div class="name">文字次要</div><div class="value">--color-text-secondary</div></div>
+    </div>
+  </div>
+
+  <!-- 字体 -->
+  <div class="section">
+    <h2>🔤 字体与排版</h2>
+    <div class="type-demo">
+      <p><span class="label">h1 28px</span><span style="font-size:28px;font-weight:700">标题一 The quick brown fox</span></p>
+      <p><span class="label">h2 22px</span><span style="font-size:22px;font-weight:600">标题二 The quick brown fox</span></p>
+      <p><span class="label">h3 18px</span><span style="font-size:18px;font-weight:600">标题三 The quick brown fox</span></p>
+      <p><span class="label">h4 16px</span><span style="font-size:16px;font-weight:600">标题四 The quick brown fox</span></p>
+      <p><span class="label">正文 14px</span><span style="font-size:14px">正文内容 The quick brown fox jumps over the lazy dog. 中文排版示例。</span></p>
+      <p><span class="label">辅助 12px</span><span style="font-size:12px;color:var(--color-text-secondary,#6b7280)">辅助文字 12px 用于标注和说明</span></p>
+    </div>
+  </div>
+
+  <!-- 组件 -->
+  <div class="section">
+    <h2>🧩 组件预览</h2>
+
+    <div class="component-row"><span class="label">按钮</span><button class="btn btn-primary">主要按钮</button><button class="btn btn-outline">描边按钮</button><button class="btn btn-text">文字按钮</button></div>
+
+    <div class="component-row"><span class="label">输入框</span><input class="input-demo" placeholder="请输入内容..."><input class="input-demo" placeholder="聚焦状态" style="border-color:var(--color-primary,#1890ff)"></div>
+
+    <div class="component-row"><span class="label">卡片</span><div class="card-demo"><strong style="font-size:15px">卡片标题</strong><p style="font-size:13px;color:#666;margin-top:8px">这是卡片内容的示例文字，展示默认卡片样式。</p></div></div>
+  </div>
+
+  <!-- 布局 -->
+  <div class="section">
+    <h2>📐 布局框架</h2>
+    <p style="font-size:13px;color:#999;margin-bottom:8px">侧边栏宽度: var(--sidebar-width, 220px) · 顶栏高度: var(--header-height, 64px)</p>
+    <div class="layout-scaffold">
+      <div class="sidebar">侧边栏</div>
+      <div class="header">顶栏</div>
+      <div class="content">内容区域</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

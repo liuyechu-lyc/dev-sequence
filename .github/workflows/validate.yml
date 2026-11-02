@@ -1,0 +1,38 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.13']
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONPATH: skills/dev-sequence/scripts
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Validate bundle
+        run: python tools/validate_bundle.py
+      - name: Run regressions
+        run: python -m unittest discover -s tests -v
+      - name: Verify source manifest
+        run: python -c "import runpy; runpy.run_path('tools/install.py')['verify']()"
+      - name: Build installation packages
+        run: python tools/package.py --output dist
+      - name: Check package manifest is current
+        run: git diff --exit-code -- package-manifest.json

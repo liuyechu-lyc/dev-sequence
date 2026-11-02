@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 3,
+  "project": {
+    "name": "示例项目",
+    "subtitle": "业务原型",
+    "version": "v0.1",
+    "prd": {
+      "path": "../../需求/需求.md",
+      "version": "v0.1"
+    }
+  },
+  "overview": {
+    "summary": "项目背景与范围。",
+    "goals": [
+      "项目目标。"
+    ],
+    "glossary": [
+      {
+        "term": "核心名词",
+        "definition": "面向产品、研发、测试统一的业务口径。"
+      }
+    ],
+    "rules": [
+      {
+        "title": "全局规则一",
+        "content": "跨页面统一规则说明。"
+      },
+      {
+        "title": "全局规则二",
+        "content": "每条规则在概述页独占一行，标题与描述上下排列。"
+      }
+    ],
+    "changeLogOrder": "newest-first",
+    "prototypeChangeLog": [
+      {
+        "version": "V1.0",
+        "datetime": "2026-01-01 10:00",
+        "terminal": "管理端",
+        "pages": [
+          {
+            "name": "示例列表",
+            "action": "修改"
+          }
+        ],
+        "modules": [
+          {
+            "name": "批量操作",
+            "action": "新增"
+          }
+        ],
+        "summary": "增加批量操作入口与处理反馈。"
+      }
+    ],
+    "faq": [],
+    "tracking": {
+      "mode": "none"
+    },
+    "demo": {
+      "scope": "示例数据与界面行为均由本地模拟；后台授权、真实集成和AI质量不在本原型中验证。",
+      "paths": [
+        {
+          "name": "批量操作主流程",
+          "pageIds": [
+            "example-list"
+          ],
+          "steps": [
+            "打开示例列表，勾选记录。",
+            "点击批量启用，确认后查看列表状态与已选数量。"
+          ]
+        }
+      ],
+      "failureTriggers": [
+        "切换到页面声明的失败场景后提交批量操作，检查错误反馈和重试。"
+      ],
+      "reset": "使用页面提供的演示重置入口恢复初始示例数据，再开始下一轮。",
+      "persistence": "需按项目实现填写刷新、切页及角色切换后的保留范围；本示例不承诺已实现持久化。"
+    }
+  },
+  "navigation": [
+    {
+      "id": "docs",
+      "label": "项目文档"
+    },
+    {
+      "id": "admin",
+      "label": "管理端"
+    },
+    {
+      "id": "project-diagrams",
+      "label": "项目图解"
+    },
+    {
+      "id": "prototype-guides",
+      "label": "原型控件说明"
+    }
+  ],
+  "pages": [
+    {
+      "id": "overview",
+      "kind": "overview",
+      "title": "项目概述",
+      "output": "overview.html",
+      "navGroup": "docs",
+      "businessEnd": "项目文档",
+      "description": "说明项目目标、规则和涉及页面。",
+      "versionChanges": [],
+      "changeType": "existing",
+      "changeImpact": "none",
+      "viewports": {
+        "default": "pc",
+        "supported": [
+          {
+            "type": "pc",
+            "width": 1200,
+            "height": 900
+          }
+        ]
+      },
+      "specs": "specs/overview.json"
+    },
+    {
+      "id": "example-list",
+      "title": "示例列表",
+      "output": "example-list.html",
+      "source": "pages/example-list.html",
+      "navGroup": "admin",
+      "businessEnd": "管理端",
+      "description": "查询并维护示例数据。",
+      "versionChanges": [
+        "增加批量操作"
+      ],
+      "changeType": "modified",
+      "changeImpact": "interaction",
+      "viewports": {
+        "default": "pc",
+        "supported": [
+          {
+            "type": "pc",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      },
+      "specs": "specs/example-list.json"
+    },
+    {
+      "id": "example-flow",
+      "kind": "diagram-guide",
+      "title": "示例核心流程",
+      "output": "example-flow.html",
+      "source": "pages/example-flow.html",
+      "navGroup": "project-diagrams",
+      "businessEnd": "项目图解",
+      "description": "用图形和文字说明角色、节点与核心流程。",
+      "versionChanges": [
+        "新增核心流程图解"
+      ],
+      "changeType": "new",
+      "changeImpact": "business",
+      "viewports": {
+        "default": "pc",
+        "supported": [
+          {
+            "type": "pc",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      }
+    },
+    {
+      "id": "example-component-guide",
+      "kind": "component-guide",
+      "title": "示例控件说明",
+      "output": "example-component-guide.html",
+      "source": "pages/example-component-guide.html",
+      "navGroup": "prototype-guides",
+      "businessEnd": "原型控件说明",
+      "description": "集中说明复杂控件的结构、字段规则与状态组合。",
+      "versionChanges": [
+        "新增示例控件说明页"
+      ],
+      "changeType": "new",
+      "changeImpact": "none",
+      "viewports": {
+        "default": "pc",
+        "supported": [
+          {
+            "type": "pc",
+            "width": 1440,
+            "height": 900
+          }
+        ]
+      }
+    }
+  ],
+  "contentStandardVersion": 1,
+  "traceability": [
+    {
+      "requirementId": "FR-001",
+      "ruleIds": [
+        "BR-001"
+      ],
+      "prdPageId": "PG-001",
+      "pageId": "example-list",
+      "moduleKey": "batch-actions",
+      "scenario": "勾选记录后批量操作；失败后恢复",
+      "acceptanceIds": [
+        "AC-001"
+      ],
+      "coverage": "partial",
+      "notes": "结构示例；项目须补齐真实场景并进行浏览器验收。"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+:root {
+  --ds-viewport-width: 1440px;
+  --ds-viewport-height: 900px;
+  --ds-marker-size: 24px;
+  --ds-marker-edge-inset: 2px;
+  --ds-marker-font-size: 11px;
+  --ds-marker-existing: #1677ff;
+  --ds-marker-changed: #ff4d4f;
+  --ds-marker-shadow: 0 2px 6px rgba(0, 0, 0, .28);
+  --ds-layer-base-marker: 100000;
+  --ds-layer-overlay-start: 200000;
+  --ds-layer-overlay-step: 2000;
+  --ds-layer-overlay-marker-offset: 1000;
+}
+
+html,
+body {
+  overscroll-behavior-x: none;
+}
+
+[data-ds-scroll-consumer] {
+  overscroll-behavior: none;
+}
+
+.ds-back-to-frame {
+  display: none;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  background: #1890ff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, .3);
+}
+
+body:not(.ds-in-frame) .ds-back-to-frame { display: block; }
+
+.ds-spec-marker-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+}
+
+.ds-spec-marker-layer.ds-base { z-index: var(--ds-layer-base-marker); }
+.ds-spec-marker-layer.ds-overlay { z-index: var(--ds-overlay-marker-z); }
+.ds-spec-marker-layer.ds-suppressed { visibility: hidden; pointer-events: none; }
+
+.ds-overlay-marker-host {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+}
+
+[data-ds-overlay-root].ds-overlay-managed {
+  z-index: var(--ds-overlay-z) !important;
+  isolation: isolate;
+}
+
+.ds-spec-marker {
+  position: absolute;
+  display: none;
+  box-sizing: border-box;
+  width: var(--ds-marker-size);
+  height: var(--ds-marker-size);
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  font-size: var(--ds-marker-font-size);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: var(--ds-marker-shadow);
+  transition: transform 150ms ease;
+}
+
+.ds-spec-marker.ds-visible { display: flex; }
+.ds-spec-marker:hover { transform: scale(1.12); }
+.ds-spec-marker:focus-visible { outline: 2px solid #fff; box-shadow: 0 0 0 4px var(--ds-marker-existing); }
+.ds-spec-marker.ds-existing { background: var(--ds-marker-existing); }
+.ds-spec-marker.ds-new,
+.ds-spec-marker.ds-modified { background: var(--ds-marker-changed); }

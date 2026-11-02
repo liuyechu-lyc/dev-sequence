@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{PAGE_TITLE}}</title>
+  <style>{{OVERVIEW_CSS}}</style>
+</head>
+<body>
+  <main class="overview" data-ds-prototype-root>
+    <section class="hero">
+      <small>PRODUCT DELIVERY · PROTOTYPE</small>
+      <h1>{{PROJECT_NAME}}</h1>
+      <p>{{PROJECT_SUBTITLE}}</p>
+    </section>
+    <section class="card glossary" data-overview-binding>
+      <h2>版本与需求依据</h2>
+      {{BUSINESS_BINDING}}
+    </section>
+    <section class="card glossary" data-overview-demo>
+      <h2>演示说明与模拟范围</h2>
+      {{DEMO}}
+    </section>
+    <div class="summary-grid">
+      <section class="card" data-overview-summary>
+        <h2>项目概述</h2>
+        <p>{{SUMMARY}}</p>
+      </section>
+      <section class="card" data-overview-goals>
+        <h2>项目目标</h2>
+        <ul>{{GOALS}}</ul>
+      </section>
+    </div>
+    <section class="card glossary" data-overview-glossary>
+      <h2>名词解析</h2>
+      <div class="glossary-list">{{GLOSSARY}}</div>
+    </section>
+    <section class="card rules" data-overview-rules>
+      <h2>关键规则说明</h2>
+      <div class="rule-list">{{RULES}}</div>
+    </section>
+    <section class="pages" data-overview-pages>
+      <h2>项目涉及页面</h2>
+      {{PAGE_GROUPS}}
+    </section>
+    <section class="card change-log" data-overview-change-log>
+      <h2>原型修改记录</h2>
+      {{CHANGE_LOG}}
+    </section>
+    <section class="card faq" data-overview-traceability>
+      <h2>需求追溯</h2>
+      {{TRACEABILITY}}
+    </section>
+    <section class="card faq" data-overview-faq>
+      <h2>FAQ 记录</h2>
+      {{FAQ}}
+    </section>
+    <section class="card tracking" data-overview-tracking data-tracking-mode="{{TRACKING_MODE}}">
+      <h2>埋点文档</h2>
+      {{TRACKING}}
+    </section>
+  </main>
+</body>
+</html>

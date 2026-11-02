@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+/dist/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local workflow state, project evidence and publish audit backups
+.dev-sequence/
+验收记录/
+dev-sequence-security-audit-*/
+*.bundle
