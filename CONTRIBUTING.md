@@ -20,10 +20,16 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=skills/dev-sequence/scripts python3 -m unit
 python3 tools/package.py --output dist
 ```
 
-Packaging refreshes `package-manifest.json`; include the updated manifest when changing packaged files. Generated archives stay in ignored `dist/` and are distributed through releases.
+Packaging refreshes `package-manifest.json`; include the updated manifest when changing packaged files, including README-only edits made through GitHub's web editor. Run packaging after all edits, then verify the final source tree before committing:
+
+```sh
+python3 -c "import runpy; runpy.run_path('tools/install.py')['verify']()"
+```
+
+Keep repository text files as LF, as specified by `.gitattributes`, so checkout does not change their byte hashes on Windows. Preserve strict installation checks; refresh the manifest only after reviewing the intended changes. Generated archives stay in ignored `dist/` and are distributed through releases.
 
 ## 中文
 
-欢迎提交问题、改进说明或发起范围明确的 PR。问题反馈请附阶段、版本、环境、复现步骤、预期/实际结果及脱敏证据；不要上传密钥或私有项目资料。行为修改应包含有意义的回归验证，并同步相关中英文说明。打包后提交更新的清单，安装包通过 Releases 分发。
+欢迎提交问题、改进说明或发起范围明确的 PR。问题反馈请附阶段、版本、环境、复现步骤、预期/实际结果及脱敏证据；不要上传密钥或私有项目资料。行为修改应包含有意义的回归验证，并同步相关中英文说明。包括网页上仅修改 README 的情况，也要在全部修改完成后重新打包、验证并一起提交更新的清单。文本文件保留 LF 换行，安装包通过 Releases 分发。
 
 Contributions are provided under the project's [MIT license](LICENSE).

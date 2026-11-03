@@ -37,6 +37,17 @@ python3 tools/install.py --dest "$HOME/.codex/skills" --stages proto --apply
 
 已有同名目录时安装器拒绝覆盖；先比较并按实际授权备份/升级。包内默认启用正常自动发现；安装后新开会话或按客户端方式刷新。其他 Agent 可把 skills 中选定目录安装到自己的技能目录，或直接读取相应 SKILL.md，所有资源按相对位置解析。
 
+### 修改源码后的安装与打包
+
+源码清单也校验 README 等说明文件。维护者修改这些文件后，需在项目根目录重新生成清单和安装包，并将更新后的 `package-manifest.json` 与修改一起提交：
+
+```sh
+python3 tools/package.py --output dist
+python3 -c "import runpy; runpy.run_path('tools/install.py')['verify']()"
+```
+
+直接在 GitHub 网页修改 README 后，也需要同步这一步。普通使用者遇到“文件缺失或校验失败”时，先重新下载完整源码或使用已验证的 Release ZIP；维护者确认改动来源后再重建清单。校验失败时不要跳过校验或直接改填预期哈希。仓库文本统一保留 LF 换行，以便不同系统检出后使用同一份文件校验值。
+
 ## 使用
 
 完整链路调用 `$dev-sequence`；仅做原型调用 `$dev-sequence-prototype`，其他阶段同理。普通问答不应触发整条流程。只要求方案不授权写业务代码；要求全链路时在已授权范围内持续推进。
