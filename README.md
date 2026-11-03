@@ -4,7 +4,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-Created and maintained by [@liuyechu-lyc](https://github.com/liuyechu-lyc) · v1.4.0 · [MIT license](LICENSE)
+Created and maintained by [@liuyechu-lyc](https://github.com/liuyechu-lyc) · v1.4.1 · [MIT license](LICENSE)
 
 One coordinator and six focused skills let you run a single stage, combine selected stages, or follow the full delivery flow. Every stage defines its inputs, outputs, review criteria, and confirmation gate.
 
@@ -277,7 +277,7 @@ Run regressions from the **full source package**:
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=skills/dev-sequence/scripts python3 -m unittest discover -s tests -v
 ```
 
-Version 1.4.0 keeps responses and fixes in the originating round, uses compact verification links, and presents collapsible round-based records. Fresh-context final test design/execution and re-verification remain mandatory. Current checks and their limits are documented in docs/validation.md and CHANGELOG. Real-business-project validation remains separate.
+Version 1.4.1 makes seven review gates explicit for requirements and prototypes: page coverage, permissions, failures and recovery, empty/loading states, acceptance-criteria links, traceability, and version consistency. Standards, request templates, and reviewer entry points are synchronized. Applicable failed or unchecked items prevent acceptance; non-applicability needs evidence and a separate disclosure. Reviewers still assess checklist coverage and evidence semantics; tools enforce the existing protocol and states. Round-local responses/repairs, independent re-verification, and fresh-context final testing remain mandatory. Current checks and their limits are documented in docs/validation.md and CHANGELOG. Real-business-project validation remains separate.
 
 ## Project structure and contributions
 

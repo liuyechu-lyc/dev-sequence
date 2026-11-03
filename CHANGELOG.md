@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 · 2026-11-03
+
+- 为需求和原型分别增加七类独立必检闸门：页面覆盖、权限、异常与失败、空态与加载态、AC关联、追溯完整、版本一致；保留既有检查编号与含义。
+- 同步两阶段验收规则、请求模板和评审入口，补齐逐项证据、条件项触发、不适用依据与阻断规则；适用项失败/未检查不得通过，冻结清单遗漏退回补齐后新轮次验收。
+- 保持现有结果协议和状态机；不新增机器语义判断，不自动覆盖已有项目定制规则或改写历史记录。已有项目使用新版规则时须对比合并，并重新检查受影响结论。
+- 本地118项回归及68项针对性合成核查符合预期；合成协议验证不替代真实业务或独立验收。
+- Added seven explicit review gates for requirements and prototypes, synchronized request/reviewer guidance, preserved existing IDs and protocol compatibility, and clarified evidence, applicability, and blocking decisions. Checklist coverage and evidence semantics remain reviewer responsibilities.
+
 ## 1.4.0 · 2026-11-03
 
 - 发现、答复及修复归属同一验收轮次；reply追加实际处理，fixed须提供证据，不再创建独立fix轮次。

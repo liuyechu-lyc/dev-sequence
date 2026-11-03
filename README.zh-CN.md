@@ -4,7 +4,7 @@
 
 [English](README.md) | 简体中文
 
-由 [@liuyechu-lyc](https://github.com/liuyechu-lyc) 创建与维护 · v1.4.0 · [MIT 开源许可](LICENSE)
+由 [@liuyechu-lyc](https://github.com/liuyechu-lyc) 创建与维护 · v1.4.1 · [MIT 开源许可](LICENSE)
 
 Dev Sequence 是一套独立的从产品到研发交付 skill 工具包，由 **1 个总控＋6 个流程 skill** 组成。支持单环节运行、阶段组合、全链路交付及中断恢复，每个阶段都有明确的输入、输出、验收标准和确认环节。
 
@@ -284,7 +284,7 @@ python3 tools/validate_bundle.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=skills/dev-sequence/scripts python3 -m unittest discover -s tests -v
 ```
 
-v1.4.0 将答复与修复保留在原轮次，复验简要关联，总览按轮次阅读并支持折叠；继续强制最终测试在新会话独立设计和执行。当前检查及其范围见精简验证说明和CHANGELOG；真实业务项目试用另行记录。
+v1.4.1 为需求和原型验收明确七类必检闸门：页面覆盖、权限、异常与失败、空态与加载态、AC关联、追溯完整、版本一致。规则、请求模板与评审入口同步；适用项失败或未检查不得通过，不适用须有依据并单列。清单覆盖与证据语义仍由评审核对，工具负责已有协议与状态校验。保留同轮答复/修复、独立复验及最终测试新会话规则。当前检查及其范围见精简验证说明和CHANGELOG；真实业务项目试用另行记录。
 
 ## 项目结构与参与贡献
 
