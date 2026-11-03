@@ -12,7 +12,7 @@ One coordinator and six focused skills let you run a single stage, combine selec
 Requirements → UI Design → Interactive Prototype → Technical Design → Implementation → Testing & Acceptance
 ```
 
-![Dev Sequence guide: six features, simple installation, usage, and stage inputs/deliverables](docs/assets/dev-sequence-guide.zh-CN-v4.png)
+![Dev Sequence guide: six features, simple installation, usage, and stage inputs/deliverables](docs/assets/dev-sequence-guide.en-v1.png)
 
 ## Features
 
@@ -263,7 +263,7 @@ Default stage folders are `需求/`, `UI设计/`, `原型/`, `技术方案/`, `�
 - [Three-round acceptance example](examples/acceptance-rounds.md)
 - [Complete user guide in Chinese](docs/usage-guide.zh-CN.md)
 - [Automatic handoff and authorized execution](skills/dev-sequence/references/automatic-handoff.md)
-- [Guide image](docs/assets/dev-sequence-guide.zh-CN-v4.png)
+- [English guide image](docs/assets/dev-sequence-guide.en-v1.png)
 
 Validate bundle structure:
 
