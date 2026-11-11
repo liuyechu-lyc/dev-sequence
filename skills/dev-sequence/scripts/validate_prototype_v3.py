@@ -17,7 +17,7 @@ VIEWPORT_TYPES = {"pc", "tablet", "mobile"}
 VIEWPORT_LABELS = {"pc": "PC", "tablet": "平板", "mobile": "手机"}
 SCROLL_CONSUMER_VALUES = {"x", "y", "both"}
 OVERLAY_MODE_VALUES = {"modal", "nonmodal"}
-FRAMEWORK_VERSION = "3.14.0"
+FRAMEWORK_VERSION = "3.14.1"
 PROTOCOL_VERSION = 5
 SPEC_SCHEMA_VERSION = 5
 PAGE_KINDS = {"overview", "business", "component-guide", "diagram-guide"}
@@ -707,7 +707,9 @@ def validate(source_dir: Path, output_dir: Path | None, strict_content: bool = F
                     "--ds-marker-edge-inset: 2px",
                     "box-sizing: border-box",
                     "function clampMarkerCoordinate",
-                    "maximumLeft = viewportLeft + viewportWidth - markerSize - markerEdgeInset",
+                    "maximumLeft = viewportLeft + visibleRight - markerSize - markerEdgeInset",
+                    "set-marker-viewport",
+                    "min-height: var(--ds-marker-size) !important;",
                     "data-ds-scroll-consumer",
                     "function handleTrackpadPan",
                     "function exclusiveScrollConsumerFor",

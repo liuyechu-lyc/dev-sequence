@@ -1,6 +1,6 @@
 # Validation / 验证说明
 
-Version: 1.4.1 · 2026-11-03
+Version: 1.5.0 · 2026-11-11
 
 The published source keeps executable regressions, installation checks, and small examples. Historical development logs, duplicate evidence exports, old reports, and superseded guide assets are excluded.
 
@@ -12,7 +12,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=skills/dev-sequence/scripts python3 -m unit
 python3 tools/package.py --output dist
 ```
 
-The regression suite contains 118 tests, including review choices, round-local responses/repairs, compact historical verification, reopened findings, stale results, independent final-test evidence, interruption recovery, prototype checks, and six-stage temporary installations. One optional developer check uses Node.js to exercise template scripts in an offline DOM model; runtime tools require only Python 3.10+ standard library. GitHub CI checks Python 3.10 and 3.13.
+The regression suite covers review choices, round-local responses/repairs, compact historical verification, reopened findings, stale results, independent final-test evidence, interruption recovery, prototype checks, temporary installations, and final delivery gates and packaging. One optional developer check uses Node.js to exercise template scripts in an offline DOM model; runtime tools require only Python 3.10+ standard library. GitHub CI checks Python 3.10 and 3.13.
 
 The 1.4.0 baseline received independent fresh-context behavioral checks with explicitly synthetic data. The 1.4.1 review-gate update passed the same 118-test suite locally and 68 targeted local checks covering template distribution, frozen review inputs, failed/unchecked gate results, evidence fields, applicability records, and preservation of project customizations. These 68 checks are focused maintenance checks, not 68 additional bundled regression tests or an independent business acceptance review.
 

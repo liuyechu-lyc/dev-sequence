@@ -495,11 +495,29 @@
       pageId: currentPage.id,
       viewport: viewport
     }, '*');
+    updateMarkerViewport();
+  }
+
+  function updateMarkerViewport() {
+    if (!currentPage || !currentManifest || !protoFrame.contentWindow) return;
+    var canvas = mainArea.getBoundingClientRect();
+    var frame = protoFrame.getBoundingClientRect();
+    var toolbar = mainArea.querySelector('.viewport-toolbar').getBoundingClientRect();
+    protoFrame.contentWindow.postMessage({
+      channel: CHANNEL, protocolVersion: PROTOCOL_VERSION, pageId: currentPage.id, type: 'set-marker-viewport',
+      bounds: {
+        left: (canvas.left - frame.left) / scale,
+        top: (canvas.top - frame.top) / scale,
+        right: (canvas.right - frame.left) / scale,
+        bottom: (Math.min(canvas.bottom, toolbar.top - 4) - frame.top) / scale
+      }
+    }, '*');
   }
 
   function updateTransform() {
     protoFrame.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px) scale(' + scale + ')';
     zoomLabel.textContent = Math.round(scale * 100) + '%';
+    updateMarkerViewport();
   }
 
   function wheelUnit(deltaMode) {
@@ -653,6 +671,7 @@
     } else if (data.type === 'content-size') {
       var height = Math.ceil(Number(data.height));
       if (height > 0 && protoFrame.style.height !== height + 'px') protoFrame.style.height = height + 'px';
+      updateMarkerViewport();
     } else if (data.type === 'canvas-pan') {
       queueCanvasPan(data.deltaX, data.deltaY, data.deltaMode);
     } else if (data.type === 'spec-module-selected') {
@@ -664,6 +683,8 @@
     }
   });
 
+  if (window.ResizeObserver) new ResizeObserver(updateMarkerViewport).observe(mainArea);
+  else window.addEventListener('resize', updateMarkerViewport);
   renderNavigation();
   window.addEventListener('hashchange', handleHash);
   handleHash();

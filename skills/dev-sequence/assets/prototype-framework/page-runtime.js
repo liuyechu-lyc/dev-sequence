@@ -25,6 +25,7 @@
   var overlayStep = parseFloat(rootStyle.getPropertyValue('--ds-layer-overlay-step')) || 2000;
   var overlayMarkerOffset = parseFloat(rootStyle.getPropertyValue('--ds-layer-overlay-marker-offset')) || 1000;
   var ownsSpacePan = false;
+  var markerViewport = null;
 
   if (inFrame) document.body.classList.add('ds-in-frame');
 
@@ -242,10 +243,17 @@
       var viewportTop = window.scrollY;
       var viewportWidth = document.documentElement.clientWidth || window.innerWidth;
       var viewportHeight = document.documentElement.clientHeight || window.innerHeight;
-      var minimumLeft = viewportLeft + markerEdgeInset;
-      var minimumTop = viewportTop + markerEdgeInset;
-      var maximumLeft = viewportLeft + viewportWidth - markerSize - markerEdgeInset;
-      var maximumTop = viewportTop + viewportHeight - markerSize - markerEdgeInset;
+      var visible = markerViewport || {left: 0, top: 0, right: viewportWidth, bottom: viewportHeight};
+      var visibleLeft = Math.max(0, visible.left);
+      var visibleTop = Math.max(0, visible.top);
+      var visibleRight = Math.min(viewportWidth, visible.right);
+      var visibleBottom = Math.min(viewportHeight, visible.bottom);
+      var minimumLeft = viewportLeft + visibleLeft + markerEdgeInset;
+      var minimumTop = viewportTop + visibleTop + markerEdgeInset;
+      var maximumLeft = viewportLeft + visibleRight - markerSize - markerEdgeInset;
+      var maximumTop = viewportTop + visibleBottom - markerSize - markerEdgeInset;
+      var returnButton = !inFrame && document.getElementById('pdBackToFrame');
+      var returnRect = returnButton && isVisible(returnButton) ? returnButton.getBoundingClientRect() : null;
       markerRecords.forEach(function (record) {
         var anchor = anchorFor(record.spec.key);
         if (!isVisible(anchor)) {
@@ -259,10 +267,19 @@
         }
         if (record.dot.parentElement !== layerRecord.layer) layerRecord.layer.appendChild(record.dot);
         var rect = anchor.getBoundingClientRect();
+        if (maximumLeft < minimumLeft || maximumTop < minimumTop || rect.right <= visibleLeft ||
+            rect.left >= visibleRight || rect.bottom <= visibleTop || rect.top >= visibleBottom) {
+          record.dot.classList.remove('ds-visible');
+          return;
+        }
         var idealLeft = rect.right + viewportLeft - markerSize / 2;
         var idealTop = rect.top + viewportTop - markerSize / 2;
         var left = clampMarkerCoordinate(idealLeft, minimumLeft, maximumLeft);
         var top = clampMarkerCoordinate(idealTop, minimumTop, maximumTop);
+        if (returnRect && left + markerSize > viewportLeft + returnRect.left && left < viewportLeft + returnRect.right &&
+            top + markerSize > viewportTop + returnRect.top && top < viewportTop + returnRect.bottom) {
+          left = Math.max(minimumLeft, viewportLeft + returnRect.left - markerSize - markerEdgeInset);
+        }
         record.dot.style.left = left + 'px';
         record.dot.style.top = top + 'px';
         record.dot.classList.add('ds-visible');
@@ -303,6 +320,13 @@
     var data = event.data;
     if (!validParentMessage(event, data)) return;
     if (data.type === 'set-viewport') applyViewport(data.viewport);
+    else if (data.type === 'set-marker-viewport') {
+      var bounds = data.bounds;
+      if (bounds && ['left', 'top', 'right', 'bottom'].every(function (key) { return Number.isFinite(bounds[key]); })) {
+        markerViewport = bounds;
+        positionMarkers();
+      }
+    }
     else if (data.type === 'space-pan-reset') ownsSpacePan = false;
   });
   window.addEventListener('keydown', startSpacePan, true);

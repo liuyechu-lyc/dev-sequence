@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 · 2026-11-11
+
+- 原型框架升至 3.14.1。多模块页面分别维护规范和锚点，并在浏览器点验。固定标注圆点为 24 × 24 px，按实际可见画布内收，避让查看器工具栏及独立页返回入口。
+- 新增最终交付工具。核对当前适用节点的验收、确认及最终测试冻结输入，按白名单生成 ZIP、使用文件和含 SHA-256 的交付清单。
+- 明确完整重做的阶段范围。新项目将实施文件集中在 `代码/`，已有工程沿用现有布局。保留 v1.4.1 的七类需求及原型必检闸门。
+- Ships prototype framework 3.14.1 with module-level annotation guidance and viewport-aware markers. Adds allowlisted final packaging tied to accepted reviews and frozen test inputs. Clarifies full-redo scope and new-project code layout.
+
 ## 1.4.1 · 2026-11-03
 
 - 为需求和原型分别增加七类独立必检闸门：页面覆盖、权限、异常与失败、空态与加载态、AC关联、追溯完整、版本一致；保留既有检查编号与含义。

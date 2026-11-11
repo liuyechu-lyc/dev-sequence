@@ -260,6 +260,12 @@ Index 根据注册表解析页面标题并生成可点击跳转。目标必须�
 - 运行时根据 DOM 嵌套关系、可见性及出现顺序分配深度。`data-ds-overlay-root` 必须是定位元素并覆盖自身交互区域；嵌套载体应放在父载体 DOM 内，禁止用业务自定义 z-index 绕过运行时分层。
 - `ds-*` CSS 类、`data-ds-*` 属性和 `--ds-*` 变量属于框架保留命名空间，业务页面不得覆盖或复用；业务 DOM 只允许使用契约明确开放的 `data-ds-prototype-root`、`data-ds-spec-anchor`、`data-ds-scroll-consumer`、`data-ds-overlay-root` 和 `data-ds-overlay-mode`。
 
+### 标注视觉与命中回归
+
+页面必须按功能模块拆分规范与锚点。整页锚点仅用于页面确实只有一个功能模块的情况。构建后在真实浏览器检查同页多个模块的圆点能分别点击，并打开对应规范。
+
+圆点的 24 × 24 px 尺寸与 padding 由框架隔离，业务通用按钮样式不得拉伸它。查看器通过可选的 `set-marker-viewport` 消息同步实际画布裁切范围，圆点在可见模块的裁切边内收，避开底部工具条；画布外的模块不显示圆点。单页打开时圆点避让「在框架中打开」。实测至少包括缩放、平移、侧栏开关，以及浮层打开和关闭后的命中。使用浏览器原生顶层对话框时，外置标注会被顶层遮挡；带标注的阻断式业务浮层应使用受框架管理的非原生顶层容器，并实现背景禁用和焦点管理。
+
 ## 5. 变更影响
 
 `changeImpact` 允许：
@@ -292,7 +298,7 @@ python3 "$CORE_ROOT/scripts/build_prototype_v3.py" 原型-v3/app --output 原型
 版本职责：
 
 - `protocolVersion`：Index 与页面消息协议；当前为 5。
-- `frameworkVersion`：Index、标注、规范渲染框架；当前为 3.14.0。
+- `frameworkVersion`：Index、标注、规范渲染框架；当前为 3.14.1。
 - `specSchemaVersion`：技术规范数据结构；当前为 5。
 - `frameworkFingerprint`：固定框架资产校验值；同一交付目录必须一致。
 - `buildId`：项目构建内容标识；使用 SHA-256 内容哈希的前 12 位小写十六进制字符。哈希输入必须包含框架版本、生成器、Index/公共 JS/CSS、项目概述 DOM 模板与 CSS、标准化项目配置以及注册表引用的全部页面与规范源文件。相同输入必须得到相同 ID，任一有效输入变化必须得到新 ID；禁止使用需读取上次构建状态的递增计数器。

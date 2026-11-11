@@ -15,7 +15,7 @@ from pathlib import Path
 from prototype_content import prd_binding
 
 
-FRAMEWORK_VERSION = "3.14.0"
+FRAMEWORK_VERSION = "3.14.1"
 PROTOCOL_VERSION = 5
 SPEC_SCHEMA_VERSION = 5
 MANAGED_RE = re.compile(r"\n?<!-- DS-FRAMEWORK-START -->.*?<!-- DS-FRAMEWORK-END -->\n?", re.S)

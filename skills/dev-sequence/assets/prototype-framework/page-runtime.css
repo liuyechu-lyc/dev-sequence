@@ -68,12 +68,19 @@ body:not(.ds-in-frame) .ds-back-to-frame { display: block; }
   position: absolute;
   display: none;
   box-sizing: border-box;
-  width: var(--ds-marker-size);
-  height: var(--ds-marker-size);
+  width: var(--ds-marker-size) !important;
+  height: var(--ds-marker-size) !important;
+  min-width: var(--ds-marker-size) !important;
+  max-width: var(--ds-marker-size) !important;
+  min-height: var(--ds-marker-size) !important;
+  max-height: var(--ds-marker-size) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  appearance: none;
   align-items: center;
   justify-content: center;
   border: 2px solid #fff;
-  border-radius: 50%;
+  border-radius: 50% !important;
   color: #fff;
   font-size: var(--ds-marker-font-size);
   font-weight: 700;
@@ -85,7 +92,7 @@ body:not(.ds-in-frame) .ds-back-to-frame { display: block; }
 }
 
 .ds-spec-marker.ds-visible { display: flex; }
-.ds-spec-marker:hover { transform: scale(1.12); }
+.ds-spec-marker:hover { filter: brightness(1.1); }
 .ds-spec-marker:focus-visible { outline: 2px solid #fff; box-shadow: 0 0 0 4px var(--ds-marker-existing); }
 .ds-spec-marker.ds-existing { background: var(--ds-marker-existing); }
 .ds-spec-marker.ds-new,

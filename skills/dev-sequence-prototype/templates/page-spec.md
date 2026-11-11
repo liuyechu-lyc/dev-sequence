@@ -33,7 +33,7 @@ graph TD
 {
   "channel": "dev-sequence-prototype",
   "protocolVersion": 5,
-  "frameworkVersion": "3.14.0",
+  "frameworkVersion": "3.14.1",
   "specSchemaVersion": 5,
   "pageId": "stable-page-id",
   "title": "页面名称",

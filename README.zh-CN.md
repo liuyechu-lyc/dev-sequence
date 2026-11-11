@@ -4,7 +4,7 @@
 
 [English](README.md) | 简体中文
 
-由 [@liuyechu-lyc](https://github.com/liuyechu-lyc) 创建与维护 · v1.4.1 · [MIT 开源许可](LICENSE)
+由 [@liuyechu-lyc](https://github.com/liuyechu-lyc) 创建与维护 · v1.5.0 · [MIT 开源许可](LICENSE)
 
 Dev Sequence 是一套独立的从产品到研发交付 skill 工具包，由 **1 个总控＋6 个流程 skill** 组成。支持单环节运行、阶段组合、全链路交付及中断恢复，每个阶段都有明确的输入、输出、验收标准和确认环节。
 
@@ -208,7 +208,7 @@ UI 设计支持 URL、截图/粘贴图片、HTML 文件和项目指定参考文�
 
 ### 5. 代码编写
 
-调用：`$dev-sequence-code`；实施记录默认目录：`代码/`，源码留在实际仓库。
+调用 `$dev-sequence-code`。新项目没有既有工程布局时，将实施文件集中在 `代码/`。已有工程沿用现有源码布局，实施记录放在 `代码/`。
 
 **输入内容**
 
@@ -284,7 +284,7 @@ python3 tools/validate_bundle.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=skills/dev-sequence/scripts python3 -m unittest discover -s tests -v
 ```
 
-v1.4.1 为需求和原型验收明确七类必检闸门：页面覆盖、权限、异常与失败、空态与加载态、AC关联、追溯完整、版本一致。规则、请求模板与评审入口同步；适用项失败或未检查不得通过，不适用须有依据并单列。清单覆盖与证据语义仍由评审核对，工具负责已有协议与状态校验。保留同轮答复/修复、独立复验及最终测试新会话规则。当前检查及其范围见精简验证说明和CHANGELOG；真实业务项目试用另行记录。
+v1.5.0 纳入原型框架 3.14.1，明确多模块标注、圆点尺寸和可视区域内收规则，并新增最终交付工具。工具按白名单从最终测试冻结输入中核对文件，确认适用阶段通过并接受后生成交付目录。需求和原型沿用 v1.4.1 的七类必检闸门。参见[最终交付规则](skills/dev-sequence/references/final-delivery.md)、[验证说明](docs/validation.md)和[变更记录](CHANGELOG.md)。
 
 ## 项目结构与参与贡献
 

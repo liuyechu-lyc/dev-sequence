@@ -17,7 +17,7 @@ import review_choice as choices
 from datetime import datetime
 from pathlib import Path
 
-VERSION = "1.4.1"
+VERSION = "1.5.0"
 PROTOCOL = 1
 CORE = Path(__file__).resolve().parent.parent
 STAGES = {

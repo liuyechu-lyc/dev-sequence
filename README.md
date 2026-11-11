@@ -4,7 +4,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-Created and maintained by [@liuyechu-lyc](https://github.com/liuyechu-lyc) · v1.4.1 · [MIT license](LICENSE)
+Created and maintained by [@liuyechu-lyc](https://github.com/liuyechu-lyc) · v1.5.0 · [MIT license](LICENSE)
 
 One coordinator and six focused skills let you run a single stage, combine selected stages, or follow the full delivery flow. Every stage defines its inputs, outputs, review criteria, and confirmation gate.
 
@@ -201,7 +201,7 @@ Invoke `$dev-sequence-tech`. Default folder: `技术方案/`.
 
 ### 5. Implementation
 
-Invoke `$dev-sequence-code`. Default records folder: `代码/`; source code stays in its actual repository.
+Invoke `$dev-sequence-code`. New projects without an existing layout put implementation files in `代码/`. Existing repositories keep their source layout and use `代码/` for implementation records.
 
 **Inputs**
 
@@ -250,7 +250,7 @@ Business test plans and reports belong in `测试验收/`; acceptance-round reco
 - Acceptance **rules**: each stage root, as `.review-skill.md` and `验收规则.html`.
 - Acceptance **records, requests, third-party prompts, and round reports**: the project-level `验收记录/` directory.
 - Review records follow **round → issue → result**, with matching Markdown and HTML.
-- Source code stays in the repository's actual structure.
+- For a final delivery after the applicable stages have passed and been accepted, use the [final delivery rules](skills/dev-sequence/references/final-delivery.md) to package reviewed files.
 
 Default stage folders are `需求/`, `UI设计/`, `原型/`, `技术方案/`, `代码/` (implementation records), and `测试验收/`.
 
@@ -277,7 +277,7 @@ Run regressions from the **full source package**:
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=skills/dev-sequence/scripts python3 -m unittest discover -s tests -v
 ```
 
-Version 1.4.1 makes seven review gates explicit for requirements and prototypes: page coverage, permissions, failures and recovery, empty/loading states, acceptance-criteria links, traceability, and version consistency. Standards, request templates, and reviewer entry points are synchronized. Applicable failed or unchecked items prevent acceptance; non-applicability needs evidence and a separate disclosure. Reviewers still assess checklist coverage and evidence semantics; tools enforce the existing protocol and states. Round-local responses/repairs, independent re-verification, and fresh-context final testing remain mandatory. Current checks and their limits are documented in docs/validation.md and CHANGELOG. Real-business-project validation remains separate.
+Version 1.5.0 ships prototype framework 3.14.1 with module-level annotation guidance, fixed-size markers, and visible-canvas positioning. It adds a final delivery tool that packages allowlisted files after review and verifies them against frozen test inputs. The seven requirement and prototype review gates introduced in v1.4.1 remain in the workflow. See [validation](docs/validation.md) and the [changelog](CHANGELOG.md) for details.
 
 ## Project structure and contributions
 
